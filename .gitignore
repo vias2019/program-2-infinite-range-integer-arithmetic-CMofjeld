@@ -36,3 +36,6 @@
 .*.sw?
 .idea/
 .vs/
+
+# Build files
+Build

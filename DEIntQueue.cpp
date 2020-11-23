@@ -32,13 +32,29 @@ void DEIntQueue::pushFront(int newItem) {
    ++size;
 }
 
+/** front()
+ * @brief   Returns the first item in this queue.
+ * @pre     There is at least one item in this queue.
+ * @post    The returned value is equal to the first item in this queue.
+ * @return  The first item in this queue.
+ * @throw   std::logic_error if this queue is empty.
+*/
+int DEIntQueue::front() const {
+   if (numEntries() > 0) {
+      return head->data;
+   } else {
+      // Queue is empty
+      throw std::logic_error("DEIntQueue::front() called on empty queue.");
+   }
+}
+
 /** numEntries()
  * @brief   Returns the number of entries in this queue.
  * @pre     size has been initialized.
  * @post    The returned value is equal to the number of entries in this queue.
  * @returns The number of entries in this queue.
 */
-int DEIntQueue::numEntries() {
+int DEIntQueue::numEntries() const {
    return size;
 }
 

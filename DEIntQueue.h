@@ -6,6 +6,7 @@
 */
 
 #include <iostream>  // Stream I/O
+#include <exception> // Exceptions
 
 class DEIntQueue {
 public:
@@ -23,13 +24,22 @@ public:
    */
    void pushFront(int newItem);
 
+   /** front()
+    * @brief   Returns the first item in this queue.
+    * @pre     There is at least one item in this queue.
+    * @post    The returned value is equal to the first item in this queue.
+    * @return  The first item in this queue.
+    * @throw   std::logic_error if this queue is empty.
+   */
+   int front() const;
+
    /** numEntries()
     * @brief   Returns the number of entries in this queue.
     * @pre     size has been initialized.
     * @post    The returned value is equal to the number of entries in this queue.
     * @return  The number of entries in this queue.
    */
-   int numEntries();
+   int numEntries() const;
 
 private:
    /** Node

@@ -55,3 +55,32 @@ TEST_CASE("DEIntQueue::pushFront adds item to front of non-empty queue", "[DEInt
    CHECK(queue.numEntries() == 2);
    CHECK(actual.str() == expected.str());
 }
+
+TEST_CASE("DEIntQueue::front returns the first item in a queue", "[DEIntQueue") {
+   // Setup
+   DEIntQueue queue;
+   
+   SECTION("with 1 item in queue") {
+      // Run
+      queue.pushFront(1);
+
+      // Test
+      CHECK(queue.front() == 1);
+   }
+
+   SECTION("with >1 item in queue") {
+      // Run
+      queue.pushFront(1);
+      queue.pushFront(2);
+
+      // Test
+      CHECK(queue.front() == 2);
+   }
+}
+
+TEST_CASE("DEIntQueue::front throws an exception for an empty queue", "[DEIntQueue") {
+   // Setup
+   DEIntQueue queue;
+   REQUIRE(queue.numEntries() == 0);
+   REQUIRE_THROWS_AS(queue.front(), std::logic_error);
+}

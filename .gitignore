@@ -39,3 +39,6 @@
 
 # Build files
 Build
+
+# VSCode workspace files
+.vscode

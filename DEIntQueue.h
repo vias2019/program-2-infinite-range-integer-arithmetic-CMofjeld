@@ -15,11 +15,19 @@ public:
    */
    DEIntQueue() : size(0), head(nullptr), tail(nullptr) { }
 
+   /** pushFront(int)
+    * @brief   Adds an integer to the front of this queue.
+    * @param   newItem  The integer being added to this queue.
+    * @post    A new node has been inserted at the front of this
+    *          queue with newItem as its data entry.
+   */
+   void pushFront(int newItem);
+
    /** numEntries()
     * @brief   Returns the number of entries in this queue.
     * @pre     size has been initialized.
     * @post    The returned value is equal to the number of entries in this queue.
-    * @returns The number of entries in this queue.
+    * @return  The number of entries in this queue.
    */
    int numEntries();
 

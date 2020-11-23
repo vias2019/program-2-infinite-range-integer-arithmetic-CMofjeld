@@ -6,6 +6,32 @@
 */
 #include "DEIntQueue.h"
 
+/** pushFront(int)
+ * @brief   Adds an integer to the front of this queue.
+ * @param   newItem  The integer being added to this queue.
+ * @post    A new node has been inserted at the front of this
+ *          queue with newItem as its data entry.
+*/
+void DEIntQueue::pushFront(int newItem) {
+   // Create the new node
+   Node* newNode = new Node{ newItem, nullptr };
+
+   // Add it to the front
+   if (numEntries() == 0) {
+      // The queue is empty - need to update tail as well as head
+      head = newNode;
+      tail = newNode;
+   } else {
+      // The queue is not empty - need to update previous head's prev pointer
+      head->prev = newNode;
+      newNode->next = head;
+      head = newNode;
+   }
+
+   // Update number of entries
+   ++size;
+}
+
 /** numEntries()
  * @brief   Returns the number of entries in this queue.
  * @pre     size has been initialized.

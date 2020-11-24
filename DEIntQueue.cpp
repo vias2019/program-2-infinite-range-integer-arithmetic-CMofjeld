@@ -66,6 +66,32 @@ void DEIntQueue::pushFront(int newItem) {
    ++size;
 }
 
+/** pushBack(int)
+ * @brief   Adds an integer to the back of this queue.
+ * @param   newItem  The integer being added to this queue.
+ * @post    A new node has been inserted at the back of this
+ *          queue with newItem as its data entry.
+*/
+void DEIntQueue::pushBack(int newItem) {
+   // Create the new node
+   Node* newNode = new Node{ newItem, nullptr };
+
+   // Add it to the front
+   if (numEntries() == 0) {
+      // The queue is empty - need to update tail as well as head
+      head = newNode;
+      tail = newNode;
+   } else {
+      // The queue is not empty - need to update previous tail's next pointer
+      tail->next = newNode;
+      newNode->prev = tail;
+      tail = newNode;
+   }
+
+   // Update number of entries
+   ++size;
+}
+
 /** front()
  * @brief   Returns the first item in this queue.
  * @pre     There is at least one item in this queue.

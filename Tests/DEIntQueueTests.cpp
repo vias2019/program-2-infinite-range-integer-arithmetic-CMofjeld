@@ -10,7 +10,7 @@
 #include <sstream>         // allow testing of queue contents via printing
 
 // DEFAULT CONSTRUCTOR TESTS
-TEST_CASE("DEIntQueue constructor creates empty queue", "[DEIntQueue") {
+TEST_CASE("DEIntQueue constructor creates empty queue", "[DEIntQueue]") {
    // Setup
    std::stringstream expected{""};  // Expected output from queue 
    std::stringstream actual;        // Actual output from queue
@@ -26,7 +26,7 @@ TEST_CASE("DEIntQueue constructor creates empty queue", "[DEIntQueue") {
 // END DEFAULT CONSTRUCTOR TESTS
 
 // PUSH FRONT TESTS
-TEST_CASE("DEIntQueue::pushFront adds item to front of empty queue", "[DEIntQueue") {
+TEST_CASE("DEIntQueue::pushFront adds item to front of empty queue", "[DEIntQueue]") {
    // Setup
    std::stringstream expected{"1 "};   // Expected output from queue
    std::stringstream actual;           // Actual output from queue
@@ -42,7 +42,7 @@ TEST_CASE("DEIntQueue::pushFront adds item to front of empty queue", "[DEIntQueu
    CHECK(actual.str() == expected.str());
 }
 
-TEST_CASE("DEIntQueue::pushFront adds item to front of non-empty queue", "[DEIntQueue") {
+TEST_CASE("DEIntQueue::pushFront adds item to front of non-empty queue", "[DEIntQueue]") {
    // Setup
    std::stringstream expected{"2 1 "};   // Expected output from queue
    std::stringstream actual;           // Actual output from queue
@@ -60,8 +60,43 @@ TEST_CASE("DEIntQueue::pushFront adds item to front of non-empty queue", "[DEInt
 }
 // END PUSH FRONT TESTS
 
+// PUSH BACK TESTS
+TEST_CASE("DEIntQueue::pushBack adds item to back of empty queue", "[DEIntQueue]") {
+   // Setup
+   std::stringstream expected{"1 "};   // Expected output from queue
+   std::stringstream actual;           // Actual output from queue
+   DEIntQueue queue;
+   REQUIRE(queue.numEntries() == 0);
+   
+   // Run
+   queue.pushBack(1);
+   actual << queue;
+
+   // Test
+   CHECK(queue.numEntries() == 1);
+   CHECK(actual.str() == expected.str());
+}
+
+TEST_CASE("DEIntQueue::pushBack adds item to back of non-empty queue", "[DEIntQueue]") {
+   // Setup
+   std::stringstream expected{"1 2 "};   // Expected output from queue
+   std::stringstream actual;           // Actual output from queue
+   DEIntQueue queue;
+   REQUIRE(queue.numEntries() == 0);
+   
+   // Run
+   queue.pushBack(1);
+   queue.pushBack(2);
+   actual << queue;
+
+   // Test
+   CHECK(queue.numEntries() == 2);
+   CHECK(actual.str() == expected.str());
+}
+// END PUSH BACK TESTS
+
 // FRONT TESTS
-TEST_CASE("DEIntQueue::front returns the first item in a queue", "[DEIntQueue") {
+TEST_CASE("DEIntQueue::front returns the first item in a queue", "[DEIntQueue]") {
    // Setup
    DEIntQueue queue;
    
@@ -83,7 +118,7 @@ TEST_CASE("DEIntQueue::front returns the first item in a queue", "[DEIntQueue") 
    }
 }
 
-TEST_CASE("DEIntQueue::front throws an exception for an empty queue", "[DEIntQueue") {
+TEST_CASE("DEIntQueue::front throws an exception for an empty queue", "[DEIntQueue]") {
    // Setup
    DEIntQueue queue;
    REQUIRE(queue.numEntries() == 0);
@@ -92,7 +127,7 @@ TEST_CASE("DEIntQueue::front throws an exception for an empty queue", "[DEIntQue
 // END FRONT TESTS
 
 // POP_FRONT TESTS
-TEST_CASE("DEIntQueue::popFront removes the first item in a queue with 1 item", "[DEIntQueue") {
+TEST_CASE("DEIntQueue::popFront removes the first item in a queue with 1 item", "[DEIntQueue]") {
    // Setup
    DEIntQueue queue;
    queue.pushFront(1);
@@ -106,7 +141,7 @@ TEST_CASE("DEIntQueue::popFront removes the first item in a queue with 1 item", 
    REQUIRE_THROWS_AS(queue.front(), std::logic_error);
 }
 
-TEST_CASE("DEIntQueue::popFront removes the first item in a queue with > 1 item", "[DEIntQueue") {
+TEST_CASE("DEIntQueue::popFront removes the first item in a queue with > 1 item", "[DEIntQueue]") {
    // Setup
    DEIntQueue queue;
    queue.pushFront(1);
@@ -123,7 +158,7 @@ TEST_CASE("DEIntQueue::popFront removes the first item in a queue with > 1 item"
    CHECK(queue.front() == 2);
 }
 
-TEST_CASE("DEIntQueue::popFront throws an exception for an empty queue", "[DEIntQueue") {
+TEST_CASE("DEIntQueue::popFront throws an exception for an empty queue", "[DEIntQueue]") {
    // Setup
    DEIntQueue queue;
    REQUIRE(queue.numEntries() == 0);
@@ -132,7 +167,7 @@ TEST_CASE("DEIntQueue::popFront throws an exception for an empty queue", "[DEInt
 // END POP_FRONT TESTS
 
 // BIG THREE TESTS
-TEST_CASE("DEIntQueue Copy constructor deep copies another queue", "[DEIntQueue") {
+TEST_CASE("DEIntQueue Copy constructor deep copies another queue", "[DEIntQueue]") {
    // Setup
    DEIntQueue original;
    std::stringstream originalBeforeChange;
@@ -201,7 +236,7 @@ TEST_CASE("DEIntQueue Copy constructor deep copies another queue", "[DEIntQueue"
    }
 }
 
-TEST_CASE("DEIntQueue assignment operator deep copies another queue", "[DEIntQueue") {
+TEST_CASE("DEIntQueue assignment operator deep copies another queue", "[DEIntQueue]") {
    // Setup
    DEIntQueue original;
    DEIntQueue copy;

@@ -48,6 +48,14 @@ public:
    */
    void pushFront(int newItem);
 
+   /** pushBack(int)
+    * @brief   Adds an integer to the back of this queue.
+    * @param   newItem  The integer being added to this queue.
+    * @post    A new node has been inserted at the back of this
+    *          queue with newItem as its data entry.
+   */
+   void pushBack(int newItem);
+
    /** front()
     * @brief   Returns the first integer in this queue.
     * @pre     There is at least one integer in this queue.

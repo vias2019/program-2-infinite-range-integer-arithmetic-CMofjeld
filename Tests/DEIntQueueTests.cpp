@@ -126,6 +126,37 @@ TEST_CASE("DEIntQueue::front throws an exception for an empty queue", "[DEIntQue
 }
 // END FRONT TESTS
 
+// BACK TESTS
+TEST_CASE("DEIntQueue::back returns the last item in a queue", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   
+   SECTION("with 1 item in queue") {
+      // Run
+      queue.pushBack(1);
+
+      // Test
+      CHECK(queue.back() == 1);
+   }
+
+   SECTION("with >1 item in queue") {
+      // Run
+      queue.pushBack(1);
+      queue.pushBack(2);
+
+      // Test
+      CHECK(queue.back() == 2);
+   }
+}
+
+TEST_CASE("DEIntQueue::back throws an exception for an empty queue", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   REQUIRE(queue.numEntries() == 0);
+   REQUIRE_THROWS_AS(queue.back(), std::logic_error);
+}
+// END BACK TESTS
+
 // POP_FRONT TESTS
 TEST_CASE("DEIntQueue::popFront removes the first item in a queue with 1 item", "[DEIntQueue]") {
    // Setup

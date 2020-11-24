@@ -108,6 +108,22 @@ int DEIntQueue::front() const {
    return head->data;
 }
 
+/** back()
+ * @brief   Returns the last integer in this queue.
+ * @pre     There is at least one integer in this queue.
+ * @post    The returned value is equal to the last integer in this queue.
+ * @return  The last integer in this queue.
+ * @throw   std::logic_error if this queue is empty.
+*/
+int DEIntQueue::back() const {
+   // Check for empty queue
+   if (numEntries() <= 0) {
+      throw std::logic_error("DEIntQueue::back() called on empty queue.");
+   }
+
+   return tail->data;
+}
+
 /** popFront()
  * @brief   Removes one integer from the front of this queue.
  * @post    The first integer in this queue has been removed and its associated

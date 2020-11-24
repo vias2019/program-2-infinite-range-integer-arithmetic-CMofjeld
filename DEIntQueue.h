@@ -65,6 +65,15 @@ public:
    */
    int front() const;
 
+   /** back()
+    * @brief   Returns the last integer in this queue.
+    * @pre     There is at least one integer in this queue.
+    * @post    The returned value is equal to the last integer in this queue.
+    * @return  The last integer in this queue.
+    * @throw   std::logic_error if this queue is empty.
+   */
+   int back() const;
+
    /** popFront()
     * @brief   Removes one integer from the front of this queue.
     * @post    The first integer in this queue has been removed and its associated

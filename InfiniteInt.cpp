@@ -60,6 +60,96 @@ int InfiniteInt::numDigits() const {
    return digits.numEntries();
 }
 
+/** operator+(const InfiniteInt&)
+ * @brief   Adds the number represented by this InfiniteInt to that represented
+ *          by another and returns the result as an InfiniteInt.
+ * @param   rhs   The InfiniteInt to add to this one
+ * @post    The returned InfiniteInt represents the sum of this InfinteInt's
+ *          number and rhs's.
+ * @return  InfiniteInt representing the sum of this InfinteInt's number and rhs's.
+*/
+InfiniteInt InfiniteInt::operator+(const InfiniteInt& rhs) const {
+   InfiniteInt result;  // The result of adding the two InfiniteInts
+
+   // Check signs to determine which helper to call and the sign of the result
+   if (!negative && !rhs.negative) {
+      // Both IIs positive - simply add and return result
+      result = add(*this, rhs);
+   } else if (negative && rhs.negative) {
+      // Both IIs negative - add absolute values and set result's sign to negative
+      result = add(*this, rhs);
+      result.negative = true;
+   }
+   // TODO: handle cases where one is positive and the other is not
+
+   return result;
+}
+
+/** add(const InfiniteInt&, const InfiniteInt&)
+ * @brief   Helper method to add InfiniteInts. Ignores the sign of both InfiniteInts.
+ * @param   rhs   The InfiniteInt to add to this one
+ * @post    The returned InfiniteInt represents the sum of the absolute values of
+ *          this InfinteInt's number and rhs's.
+ * @return  InfiniteInt representing the sum of this InfinteInt's number and rhs's.
+*/
+InfiniteInt InfiniteInt::add(const InfiniteInt& lhs, const InfiniteInt& rhs) const {
+   InfiniteInt result;        // The result of adding the InfiniteInts
+   result.digits.popFront();  // Remove default 0 digit
+   int partialSum{0};         // The total from summing two digits
+   int carry{0};              // The carry value after summing two digits
+   auto lhsCur = lhs.digits.last(); // iterator for this II starting at ones digit
+   auto rhsCur = rhs.digits.last(); // iterator for rhs starting at ones digit
+
+   // While both IIs have digits, add them one-by-one and record in result
+   while (lhsCur != lhs.digits.end() && rhsCur != rhs.digits.end()) {
+      partialSum = *lhsCur + *rhsCur + carry;   // add the digits
+      result.digits.pushFront(partialSum % 10); // record result
+      carry = partialSum / 10;                  // calculate carry
+
+      // Go to next highest digits (ones digit is at the end so we need to decrement)
+      --lhsCur;
+      --rhsCur;
+   }
+
+   // While either II still has digits, add them to the result (accounting for carries)
+   while (lhsCur != lhs.digits.end()) {
+      partialSum = *lhsCur + carry;
+      result.digits.pushFront(partialSum % 10);
+      carry = partialSum / 10;
+      --lhsCur;
+   }
+   while (rhsCur != rhs.digits.end()) {
+      partialSum = *rhsCur + carry;
+      result.digits.pushFront(partialSum % 10);
+      carry = partialSum / 10;
+      --rhsCur;
+   }
+
+   return result;
+}
+
+/** subtract(const InfiniteInt& rhs)
+ * @brief   Helper method to subtract InfiniteInts. Ignores the sign of both InfiniteInts.
+ * @param   rhs   The InfiniteInt to subract from this one
+ * @post    The returned InfiniteInt represents the difference of the absolute values of
+ *          this InfinteInt's number and rhs's.
+ * @return  InfiniteInt representing the difference of this InfinteInt's number and rhs's.
+*/
+InfiniteInt InfiniteInt::subtract(const InfiniteInt& lhs, const InfiniteInt& rhs) const {
+   InfiniteInt result;
+   // TODO: Implement
+   return result;
+}
+
+/** setNegative(bool isNegative)
+ * @brief   Sets the sign of this InfiniteInt
+ * @param   isNegative  New value for negative
+ * @post    negative == isNegative
+*/
+void InfiniteInt::setNegative(bool isNegative) {
+   negative = isNegative;
+}
+
 /** operator<<(ostream&, const InfiniteInt&)
  * @brief   Outputs a InfiniteInt to an output stream
  * @param   outStream      The stream to print the queue's entries to

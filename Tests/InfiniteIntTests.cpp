@@ -52,3 +52,33 @@ TEST_CASE("Int constructor correctly converts to InfiniteInt", "[InfiniteInt]") 
    testIntConstructor("INT_MAX", INT_MAX);
    testIntConstructor("INT_MIN", INT_MIN);
 }
+
+void testAddition(const std::string& inputDescription,
+                  InfiniteInt lhs,
+                  InfiniteInt rhs,
+                  const std::string& expectedResult) {
+   SECTION(inputDescription) {
+      // Setup
+      std::stringstream stringResult;
+
+      // Run
+      InfiniteInt testResult = lhs + rhs;
+      stringResult << testResult;
+
+      // Test
+      CHECK(stringResult.str() == expectedResult);
+   }
+}
+
+TEST_CASE("Addition produces expected result when both InfiniteInts are positive or both are negative",
+          "[InfiniteInt]") {
+   testAddition("Both > 0, same # of digits", InfiniteInt(123456), InfiniteInt(456789), "580245");
+   testAddition("Both < 0, same # of digits", InfiniteInt(-123456), InfiniteInt(-456789), "-580245");
+   testAddition("lhs = 0, rhs > 0", InfiniteInt(0), InfiniteInt(456789), "456789");
+   testAddition("lhs > 0, rhs = 0", InfiniteInt(456789), InfiniteInt(0), "456789");
+   testAddition("Both > 0, lhs has more digits", InfiniteInt(123456), InfiniteInt(789), "124245");
+   testAddition("Both < 0, lhs has more digits", InfiniteInt(-123456), InfiniteInt(-789), "-124245");
+   testAddition("Both > 0, rhs has more digits", InfiniteInt(789), InfiniteInt(123456), "124245");
+   testAddition("Both < 0, rhs has more digits", InfiniteInt(-789), InfiniteInt(-123456), "-124245");
+   testAddition("Both = 0", InfiniteInt(0), InfiniteInt(0), "0");
+}

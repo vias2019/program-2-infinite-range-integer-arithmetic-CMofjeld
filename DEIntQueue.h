@@ -136,8 +136,8 @@ private:
    friend std::ostream& operator<<(std::ostream& outStream, const DEIntQueue& queueToPrint);
 
 public:
-   // ITERATOR
-
+   // ITERATORS
+   
    /** iterator
     * @brief   Iterator for DEIntQueue
    */

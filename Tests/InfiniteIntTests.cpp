@@ -54,8 +54,8 @@ TEST_CASE("Int constructor correctly converts to InfiniteInt", "[InfiniteInt]") 
 }
 
 void testAddition(const std::string& inputDescription,
-                  InfiniteInt lhs,
-                  InfiniteInt rhs,
+                  const InfiniteInt& lhs,
+                  const InfiniteInt& rhs,
                   const std::string& expectedResult) {
    SECTION(inputDescription) {
       // Setup
@@ -81,4 +81,32 @@ TEST_CASE("Addition produces expected result when both InfiniteInts are positive
    testAddition("Both > 0, rhs has more digits", InfiniteInt(789), InfiniteInt(123456), "124245");
    testAddition("Both < 0, rhs has more digits", InfiniteInt(-789), InfiniteInt(-123456), "-124245");
    testAddition("Both = 0", InfiniteInt(0), InfiniteInt(0), "0");
+}
+
+void testEquality(const std::string& inputDescription,
+                  const InfiniteInt& lhs,
+                  const InfiniteInt& rhs,
+                  bool expectedResult) {
+   SECTION(inputDescription) {
+      // Test
+      REQUIRE((lhs == rhs) == expectedResult);
+   }
+}
+
+TEST_CASE("Equality operator returns true when both are equal", "[InfiniteInt]") {
+   testEquality("Both > 0 and equal", InfiniteInt(123456), InfiniteInt(123456), true);
+   testEquality("Both < 0 and equal", InfiniteInt(-456789), InfiniteInt(-456789), true);
+   testEquality("Both = 0 and equal", InfiniteInt(0), InfiniteInt(0), true);
+}
+
+TEST_CASE("Equality operator returns false when # of digits differ", "[InfiniteInt]") {
+   testEquality("Both > 0, lhs has more digits", InfiniteInt(123456), InfiniteInt(12345), false);
+   testEquality("Both > 0, rhs has more digits", InfiniteInt(45678), InfiniteInt(456789), false);
+   testEquality("Both < 0, lhs has more digits", InfiniteInt(-123456), InfiniteInt(-12345), false);
+   testEquality("Both < 0, rhs has more digits", InfiniteInt(-45678), InfiniteInt(-456789), false);
+}
+
+TEST_CASE("Equality operator returns false when signs differ", "[InfiniteInt]") {
+   testEquality("lhs negative, rhs positive", InfiniteInt(-123456), InfiniteInt(123456), false);
+   testEquality("lhs positive, rhs negative", InfiniteInt(456789), InfiniteInt(-456789), false);
 }

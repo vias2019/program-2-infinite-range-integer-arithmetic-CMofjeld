@@ -45,6 +45,16 @@ public:
    */
    InfiniteInt operator+(const InfiniteInt& rhs) const;
 
+   /** operator==(const InfiniteInt& rhs)
+    * @brief   Equality operator. Checks if this InfiniteInt represents the same integer
+    *          as another.
+    * @param   rhs   The InfiniteInt being compared to.
+    * @post    The returned value is true if both InfiniteInts have the same sign and the
+    *          same digits in the same order. Otherwise, it is false.
+    * @return  True if this InfiniteInt is equal to rhs and false, otherwise.
+   */
+   bool operator==(const InfiniteInt& rhs) const;
+
 private:
    // DATA MEMBERS
    DEIntQueue digits;   // stores the digits in this InfiniteInt (ordered from highest digit to lowest)

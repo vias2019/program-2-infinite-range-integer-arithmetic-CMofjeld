@@ -97,7 +97,7 @@ InfiniteInt InfiniteInt::add(const InfiniteInt& lhs, const InfiniteInt& rhs) con
    result.digits.popFront();  // Remove default 0 digit
    int partialSum{0};         // The total from summing two digits
    int carry{0};              // The carry value after summing two digits
-   auto lhsCur = lhs.digits.last(); // iterator for this II starting at ones digit
+   auto lhsCur = lhs.digits.last(); // iterator for lhs starting at ones digit
    auto rhsCur = rhs.digits.last(); // iterator for rhs starting at ones digit
 
    // While both IIs have digits, add them one-by-one and record in result
@@ -139,6 +139,37 @@ InfiniteInt InfiniteInt::subtract(const InfiniteInt& lhs, const InfiniteInt& rhs
    InfiniteInt result;
    // TODO: Implement
    return result;
+}
+
+/** operator==(const InfiniteInt& rhs)
+ * @brief   Equality operator. Checks if this InfiniteInt represents the same integer
+ *          as another.
+ * @param   rhs   The InfiniteInt being compared to.
+ * @post    The returned value is true if both InfiniteInts have the same sign and the
+ *          same digits in the same order. Otherwise, it is false.
+ * @return  True if this InfiniteInt is equal to rhs and false, otherwise.
+*/
+bool InfiniteInt::operator==(const InfiniteInt& rhs) const {
+   // Check number for difference in number of digits or sign
+   if ((numDigits() != rhs.numDigits()) || (negative != rhs.negative)) {
+      // Different number of digits or sign - can't be equal
+      return false;
+   }
+
+   // Check the digits one-by-one, looking for a difference
+   auto lhsCur = digits.begin();     // iterator for this II
+   auto rhsCur = rhs.digits.begin(); // iterator for rhs
+   while (lhsCur != digits.end() && rhsCur != rhs.digits.end()) {
+      if (*lhsCur != *rhsCur) {
+         // Difference found - not equal
+         return false;
+      }
+      ++lhsCur;
+      ++rhsCur;
+   }
+
+   // No difference found above - must be equal
+   return true;
 }
 
 /** setNegative(bool isNegative)

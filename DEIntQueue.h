@@ -82,6 +82,14 @@ public:
    */
    void popFront();
 
+   /** popBack()
+    * @brief   Removes one integer from the back of this queue.
+    * @post    The last integer in this queue has been removed and its associated
+    *          dynamic memory has been deallocated.
+    * @throw   std::logic_error if this queue is empty.
+   */
+   void popBack();
+
    /** numEntries()
     * @brief   Returns the number of entries in this queue.
     * @pre     size has been initialized.

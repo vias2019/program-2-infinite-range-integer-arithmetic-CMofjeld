@@ -154,6 +154,36 @@ void DEIntQueue::popFront() {
    toDelete = nullptr;
 }
 
+/** popBack()
+ * @brief   Removes one integer from the back of this queue.
+ * @post    The last integer in this queue has been removed and its associated
+ *          dynamic memory has been deallocated.
+ * @throw   std::logic_error if this queue is empty.
+*/
+void DEIntQueue::popBack() {
+   // Check for empty queue
+   if (numEntries() <= 0) {
+      throw std::logic_error("DEIntQueue::front() called on empty queue.");
+   }
+
+   Node* toDelete = tail;  // the node to delete
+
+   // Update the queue
+   if (numEntries() == 1) {
+      // Need to update both head and tail pointers
+      head = tail = nullptr;
+   } else {
+      // Need to update next pointer of previous node in the queue
+      tail = tail->prev;
+      tail->next = nullptr;
+   }
+   --size;
+
+   // Deallocate the deleted node
+   delete toDelete;
+   toDelete = nullptr;
+}
+
 /** numEntries()
  * @brief   Returns the number of entries in this queue.
  * @pre     size has been initialized.

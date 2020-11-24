@@ -197,6 +197,46 @@ TEST_CASE("DEIntQueue::popFront throws an exception for an empty queue", "[DEInt
 }
 // END POP_FRONT TESTS
 
+// POP_BACK TESTS
+TEST_CASE("DEIntQueue::popBack removes the first item in a queue with 1 item", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   queue.pushBack(1);
+   REQUIRE(queue.numEntries() == 1);
+   
+   // Run
+   queue.popBack();
+
+   // Test
+   CHECK(queue.numEntries() == 0);
+   REQUIRE_THROWS_AS(queue.front(), std::logic_error);
+}
+
+TEST_CASE("DEIntQueue::popBack removes the first item in a queue with > 1 item", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   queue.pushBack(1);
+   queue.pushBack(2);
+   queue.pushBack(3);
+   REQUIRE(queue.numEntries() == 3);
+   REQUIRE(queue.back() == 3);
+   
+   // Run
+   queue.popBack();
+
+   // Test
+   CHECK(queue.numEntries() == 2);
+   CHECK(queue.back() == 2);
+}
+
+TEST_CASE("DEIntQueue::popBack throws an exception for an empty queue", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   REQUIRE(queue.numEntries() == 0);
+   REQUIRE_THROWS_AS(queue.popBack(), std::logic_error);
+}
+// END POP_BACK TESTS
+
 // BIG THREE TESTS
 TEST_CASE("DEIntQueue Copy constructor deep copies another queue", "[DEIntQueue]") {
    // Setup

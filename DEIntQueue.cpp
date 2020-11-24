@@ -6,6 +6,40 @@
 */
 #include "DEIntQueue.h"
 
+/** DEIntQueue(const DEIntQueue&)
+ * @brief   Copy constructor.
+ * @post    This queue contains the same entries in the same order as toCopy.
+ *          The new entries are deep copies.
+*/
+DEIntQueue::DEIntQueue(const DEIntQueue& toCopy) {
+   copy(toCopy);
+}
+
+/** operator=(const DEIntQueue&)
+ * @brief   Assignment operator.
+ * @param   toCopy   The queue being copied
+ * @post    This queue contains the same entries in the same order as toCopy.
+ *          The new entries are deep copies. If this queue is the same object
+ *          as toCopy, it is unchanged.
+*/
+DEIntQueue& DEIntQueue::operator=(const DEIntQueue& toCopy) {
+   if (this != &toCopy) {
+      // Not the same queue - safe to clear and copy
+      clear();
+      copy(toCopy);
+   }
+   return *this;
+}
+
+/** ~DEIntQueue()
+ * @brief   Destructor.
+ * @post    This queue is empty and all dynamically allocated memory has been
+ *          returned to the system.
+*/
+DEIntQueue::~DEIntQueue() {
+   clear();
+}
+
 /** pushFront(int)
  * @brief   Adds an integer to the front of this queue.
  * @param   newItem  The integer being added to this queue.
@@ -40,12 +74,42 @@ void DEIntQueue::pushFront(int newItem) {
  * @throw   std::logic_error if this queue is empty.
 */
 int DEIntQueue::front() const {
-   if (numEntries() > 0) {
-      return head->data;
-   } else {
-      // Queue is empty
+   // Check for empty queue
+   if (numEntries() <= 0) {
       throw std::logic_error("DEIntQueue::front() called on empty queue.");
    }
+
+   return head->data;
+}
+
+/** popFront()
+ * @brief   Removes one integer from the front of this queue.
+ * @post    The first integer in this queue has been removed and its associated
+ *          dynamic memory has been deallocated.
+ * @throw   std::logic_error if this queue is empty.
+*/
+void DEIntQueue::popFront() {
+   // Check for empty queue
+   if (numEntries() <= 0) {
+      throw std::logic_error("DEIntQueue::front() called on empty queue.");
+   }
+
+   Node* toDelete = head;  // the node to delete
+
+   // Update the queue
+   if (numEntries() == 1) {
+      // Need to update both head and tail pointers
+      head = tail = nullptr;
+   } else {
+      // Need to update prev pointer of next node in the queue
+      head = head->next;
+      head->prev = nullptr;
+   }
+   --size;
+
+   // Deallocate the deleted node
+   delete toDelete;
+   toDelete = nullptr;
 }
 
 /** numEntries()
@@ -56,6 +120,37 @@ int DEIntQueue::front() const {
 */
 int DEIntQueue::numEntries() const {
    return size;
+}
+
+/** clear
+ * @brief   Removes all the entries from this queue.
+ * @post    This queue is empty and all dynamically allocated memory has been
+ *          returned to the system.
+*/
+void DEIntQueue::clear() {
+   while (numEntries() > 0) {
+      popFront();
+   }
+   size = 0;
+}
+
+/** copy
+ * @brief   Copies the contents of another queue into this queue.
+ * @param   toCopy   The queue being copied
+ * @pre     This queue is empty and toCopy is not the same queue as this one.
+ * @post    This queue contains the same entries in the same order as toCopy.
+ *          The new entries are deep copies.
+*/
+void DEIntQueue::copy(const DEIntQueue& toCopy) {
+   size = 0;
+   if (toCopy.head == nullptr) {
+      // Other list is empty
+      head = tail = nullptr;
+   } else {
+      for (Node* copyCur = toCopy.tail; copyCur != nullptr; copyCur = copyCur->prev) {
+         pushFront(copyCur->data);
+      }
+   }
 }
 
 /** operator<<(ostream&, const DEIntQueue&)

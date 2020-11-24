@@ -16,6 +16,30 @@ public:
    */
    DEIntQueue() : size(0), head(nullptr), tail(nullptr) { }
 
+   /** DEIntQueue(const DEIntQueue&)
+    * @brief   Copy constructor.
+    * @param   toCopy   The queue being copied
+    * @post    This queue contains the same entries in the same order as toCopy.
+    *          The new entries are deep copies.
+   */
+   DEIntQueue(const DEIntQueue& toCopy);
+
+   /** operator=(const DEIntQueue&)
+    * @brief   Assignment operator.
+    * @param   toCopy   The queue being copied
+    * @post    This queue contains the same entries in the same order as toCopy.
+    *          The new entries are deep copies. If this queue is the same object
+    *          as toCopy, it is unchanged.
+   */
+   DEIntQueue& operator=(const DEIntQueue& toCopy);
+
+   /** ~DEIntQueue()
+    * @brief   Destructor.
+    * @post    This queue is empty and all dynamically allocated memory has been
+    *          returned to the system.
+   */
+   virtual ~DEIntQueue();
+
    /** pushFront(int)
     * @brief   Adds an integer to the front of this queue.
     * @param   newItem  The integer being added to this queue.
@@ -25,13 +49,21 @@ public:
    void pushFront(int newItem);
 
    /** front()
-    * @brief   Returns the first item in this queue.
-    * @pre     There is at least one item in this queue.
-    * @post    The returned value is equal to the first item in this queue.
-    * @return  The first item in this queue.
+    * @brief   Returns the first integer in this queue.
+    * @pre     There is at least one integer in this queue.
+    * @post    The returned value is equal to the first integer in this queue.
+    * @return  The first integer in this queue.
     * @throw   std::logic_error if this queue is empty.
    */
    int front() const;
+
+   /** popFront()
+    * @brief   Removes one integer from the front of this queue.
+    * @post    The first integer in this queue has been removed and its associated
+    *          dynamic memory has been deallocated.
+    * @throw   std::logic_error if this queue is empty.
+   */
+   void popFront();
 
    /** numEntries()
     * @brief   Returns the number of entries in this queue.
@@ -51,9 +83,27 @@ private:
       Node* next; // pointer to the next Node in the queue
    };
 
+   // DATA MEMBERS
    int size;      // # of entries in the queue
    Node* head;    // pointer to the first Node in the queue
    Node* tail;    // pointer to the last Node in the queue
+
+   // PRIVATE FUNCTIONS
+   /** clear
+    * @brief   Removes all the entries from this queue.
+    * @post    This queue is empty and all dynamically allocated memory has been
+    *          returned to the system.
+   */
+   void clear();
+
+   /** copy
+    * @brief   Copies the contents of another queue into this queue.
+    * @param   toCopy   The queue being copied
+    * @pre     This queue is empty and toCopy is not the same queue as this one.
+    * @post    This queue contains the same entries in the same order as toCopy.
+    *          The new entries are deep copies.
+   */
+   void copy(const DEIntQueue& toCopy);
 
    // Allow access to private members by operator<<
    friend std::ostream& operator<<(std::ostream& outStream, const DEIntQueue& queueToPrint);

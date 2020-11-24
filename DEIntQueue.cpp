@@ -241,7 +241,7 @@ std::ostream& operator<<(std::ostream& outStream, const DEIntQueue& queueToPrint
    return outStream;
 }
 
-// ITERATORS
+// ITERATOR
 
 /** operator++()
  * @brief   Prefix increment. Advances to the next item in its DEIntQueue.
@@ -344,7 +344,7 @@ bool DEIntQueue::iterator::operator!=(const iterator& other) const {
  *          False otherwise.
 */
 bool DEIntQueue::iterator::operator==(const iterator& other) const {
-   return (&container == &other.container) && (cur == other.cur);
+   return cur == other.cur;
 }
 
 /** begin()
@@ -355,7 +355,18 @@ bool DEIntQueue::iterator::operator==(const iterator& other) const {
  * @return  An iterator that references the first entry in this queue.
 */
 DEIntQueue::iterator DEIntQueue::begin() {
-   return iterator(*this, head);
+   return iterator(head);
+}
+
+/** begin()
+ * @brief   Returns a const_iterator that references the first entry in this queue.
+ * @post    The returned const_iterator references this queue's first entry.
+ *          If this queue is empty, the const_iterator does not reference any entry
+ *          and is equivalent to the one returned by end().
+ * @return  A const_iterator that references the first entry in this queue.
+*/
+DEIntQueue::const_iterator DEIntQueue::begin() const {
+   return const_iterator(head);
 }
 
 /** last()
@@ -366,7 +377,18 @@ DEIntQueue::iterator DEIntQueue::begin() {
  * @return  An iterator that references the last entry in this queue.
 */
 DEIntQueue::iterator DEIntQueue::last() {
-   return iterator(*this, tail);
+   return iterator(tail);
+}
+
+/** last()
+ * @brief   Returns a const_iterator that references the last entry in this queue.
+ * @post    The returned const_iterator references this queue's last entry.
+ *          If this queue is empty, the const_iterator does not reference any entry
+ *          and is equivalent to the one returned by end().
+ * @return  A const_iterator that references the last entry in this queue.
+*/
+DEIntQueue::const_iterator DEIntQueue::last() const {
+   return const_iterator(tail);
 }
 
 /** end()
@@ -376,5 +398,121 @@ DEIntQueue::iterator DEIntQueue::last() {
  * @return  An iterator that represents the end of this queue.
 */
 DEIntQueue::iterator DEIntQueue::end() {
-   return iterator(*this, nullptr);
+   return iterator(nullptr);
+}
+
+/** end()
+ * @brief   Returns a const_iterator that represents the end of this queue.
+ * @post    The returned const_iterator references this queue and does not reference
+ *          any entry.
+ * @return  An const_iterator that represents the end of this queue.
+*/
+DEIntQueue::const_iterator DEIntQueue::end() const {
+   return const_iterator(nullptr);
+}
+
+// CONST ITERATOR
+
+/** operator++()
+ * @brief   Prefix increment. Advances to the next item in its DEIntQueue.
+ * @pre     cur is not null.
+ * @post    This const_iterator references the next item that occurs in its DEIntQueue.
+ *          If the previous item was the last, then cur is set to null.
+ * @return  Reference to this const_iterator.
+ * @throw   std::out_of_range if cur is null.
+*/
+DEIntQueue::const_iterator& DEIntQueue::const_iterator::operator++() {
+   if (cur == nullptr) {
+      throw std::out_of_range("Called increment on DEIntQueue::const_iterator that references no entry.");
+   }
+   cur = cur->next;
+   return *this;
+}
+
+/** operator++(int)
+ * @brief   Postfix increment. Advances to the next item in its DEIntQueue.
+ * @pre     cur is not null.
+ * @post    This const_iterator references the next item that occurs in its DEIntQueue.
+ *          If the previous item was the last, then cur is set to null.
+ * @return  A copy of the const_iterator before it was modified.
+ * @throw   std::out_of_range if cur is null.
+*/
+DEIntQueue::const_iterator DEIntQueue::const_iterator::operator++(int) {
+   if (cur == nullptr) {
+      throw std::out_of_range("Called increment on DEIntQueue::const_iterator that references no entry.");
+   }
+   const_iterator copy(*this);
+   cur = cur->next;
+   return copy;
+}
+
+/** operator--()
+ * @brief   Prefix decrement. Moves to the preceding item in its DEIntQueue.
+ * @pre     cur is not null.
+ * @post    This const_iterator references the preceding item that occurs in its DEIntQueue.
+ *          If the previous item was the first, then cur is set to null.
+ * @return  Reference to this const_iterator.
+ * @throw   std::out_of_range if cur is null.
+ */
+DEIntQueue::const_iterator& DEIntQueue::const_iterator::operator--() {
+   if (cur == nullptr) {
+      throw std::out_of_range("Called increment on DEIntQueue::const_iterator that references no entry.");
+   }
+   cur = cur->prev;
+   return *this;
+}
+
+/** operator--(int)
+ * @brief   Postfix decrement. Moves to the preceding item in its DEIntQueue.
+ * @pre     cur is not null.
+ * @post    This const_iterator references the preceding item that occurs in its DEIntQueue.
+ *          If the previous item was the first, then cur is set to null.
+ * @return  A copy of the const_iterator before it was modified.
+ * @throw   std::out_of_range if cur is null.
+ */
+DEIntQueue::const_iterator DEIntQueue::const_iterator::operator--(int) {
+   if (cur == nullptr) {
+      throw std::out_of_range("Called increment on DEIntQueue::const_iterator that references no entry.");
+   }
+   const_iterator copy(*this);
+   cur = cur->prev;
+   return copy;
+}
+
+/** operator*()
+ * @brief   Dereference operator. Returns a reference to the integer stored in the
+ *          Node this const_iterator currently references.
+ * @pre     cur is not null
+ * @return  Reference to the integer stored in the Node this const_iterator currently references.
+ * @throw   std::out_of_range if cur is null.
+*/
+const int& DEIntQueue::const_iterator::operator*() {
+   if (cur == nullptr) {
+      throw std::out_of_range("Called dereference on DEIntQueue::const_iterator that references no entry.");
+   }
+   return cur->data;
+}
+
+/** operator!=()
+ * @brief   Inequality operator.
+ * @param   other    The const_iterator being compared to
+ * @post    Returns true if the two const_iterators do not both have the same container and same node.
+ *          Returns false otherwise.
+ * @return  True if the two const_iterators do not both the same container and same node.
+ *          False otherwise.
+*/
+bool DEIntQueue::const_iterator::operator!=(const const_iterator& other) const {
+   return !operator==(other);
+}
+
+/** operator==()
+ * @brief   Equality operator.
+ * @param   other    The const_iterator being compared to
+ * @post    Returns true if the two const_iterators both have the same container and same node.
+ *          Returns false otherwise.
+ * @return  True if the two const_iterators do not both the same container and same node.
+ *          False otherwise.
+*/
+bool DEIntQueue::const_iterator::operator==(const const_iterator& other) const {
+   return cur == other.cur;
 }

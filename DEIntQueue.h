@@ -137,22 +137,12 @@ private:
 
 public:
    // ITERATOR
-   // Forward declarations and granting private access
-   class iterator;
-   friend DEIntQueue::iterator;
 
    /** iterator
     * @brief   Iterator for DEIntQueue
    */
    class iterator{
    public:
-      /** iterator(DEIntQueue& container, DEIntQueue::Node*)
-       * @brief   Constructor
-       * @param   container   The DEIntQueue the iterator is associated with
-       * @param   
-      */
-      iterator(DEIntQueue& initContainer, DEIntQueue::Node* initCur) : container(initContainer), cur(initCur) {}
-
       /** operator++()
        * @brief   Prefix increment. Advances to the next item in its DEIntQueue.
        * @pre     cur is not null.
@@ -205,54 +195,163 @@ public:
       /** operator!=()
        * @brief   Inequality operator.
        * @param   other    The iterator being compared to
-       * @post    Returns true if the two iterators do not both have the same container and same node.
+       * @post    Returns true if the two iterators do not reference the same node.
        *          Returns false otherwise.
-       * @return  True if the two iterators do not both have the same container and same node.
-       *          False otherwise.
+       * @return  True if the two iterators do not both have the same node. False otherwise.
       */
       bool operator!=(const iterator& other) const;
 
       /** operator==()
        * @brief   Equality operator.
        * @param   other    The iterator being compared to
-       * @post    Returns true if the two iterators both have the same container and same node.
+       * @post    Returns true if the two iterators reference the same node.
        *          Returns false otherwise.
-       * @return  True if the two iterators do not both have the same container and same node.
-       *          False otherwise.
+       * @return  True if the two iterators do not both have the same node. False otherwise.
       */
       bool operator==(const iterator& other) const;
 
    private:
-      // DATA MEMBERS
-      DEIntQueue& container;  // The DEIntQueue the iterator is associated with
+      /** iterator(DEIntQueue& container, DEIntQueue::Node*)
+       * @brief   Constructor
+       * @param   container   The DEIntQueue the iterator is associated with
+       * @param   
+      */
+      iterator(DEIntQueue::Node* initCur) : cur(initCur) {}
+      friend DEIntQueue;
+
       DEIntQueue::Node* cur;  // The current entry referenced by the iterator
+   };
+
+   class const_iterator{
+   public:
+      /** operator++()
+       * @brief   Prefix increment. Advances to the next item in its DEIntQueue.
+       * @pre     cur is not null.
+       * @post    This const_iterator references the next item that occurs in its DEIntQueue.
+       *          If the previous item was the last, then cur is set to null.
+       * @return  Reference to this const_iterator.
+       * @throw   std::out_of_range if cur is null.
+      */
+      const_iterator& operator++();
+
+      /** operator++(int)
+       * @brief   Postfix increment. Advances to the next item in its DEIntQueue.
+       * @pre     cur is not null.
+       * @post    This const_iterator references the next item that occurs in its DEIntQueue.
+       *          If the previous item was the last, then cur is set to null.
+       * @return  A copy of the const_iterator before it was modified.
+       * @throw   std::out_of_range if cur is null.
+      */
+      const_iterator operator++(int);
+
+      /** operator--()
+       * @brief   Prefix decrement. Moves to the preceding item in its DEIntQueue.
+       * @pre     cur is not null.
+       * @post    This const_iterator references the preceding item that occurs in its DEIntQueue.
+       *          If the previous item was the first, then cur is set to null.
+       * @return  Reference to this const_iterator.
+       * @throw   std::out_of_range if cur is null.
+       */
+      const_iterator& operator--();
+
+      /** operator--(int)
+       * @brief   Postfix decrement. Moves to the preceding item in its DEIntQueue.
+       * @pre     cur is not null.
+       * @post    This const_iterator references the preceding item that occurs in its DEIntQueue.
+       *          If the previous item was the first, then cur is set to null.
+       * @return  A copy of the const_iterator before it was modified.
+       * @throw   std::out_of_range if cur is null.
+       */
+      const_iterator operator--(int);
+
+      /** operator*()
+       * @brief   Dereference operator. Returns a reference to the integer stored in the
+       *          Node this const_iterator currently references.
+       * @pre     cur is not null
+       * @return  Reference to the integer stored in the Node this const_iterator currently references.
+       * @throw   std::out_of_range if cur is null.
+      */
+      const int& operator*();
+
+      /** operator!=()
+       * @brief   Inequality operator.
+       * @param   other    The const_iterator being compared to
+       * @post    Returns true if the two const_iterators do not reference the same node.
+       *          Returns false otherwise.
+       * @return  True if the two const_iterators do not both have the same node. False otherwise.
+      */
+      bool operator!=(const const_iterator& other) const;
+
+      /** operator==()
+       * @brief   Equality operator.
+       * @param   other    The const_iterator being compared to
+       * @post    Returns true if the two const_iterators reference the same node.
+       *          Returns false otherwise.
+       * @return  True if the two const_iterators do not both have the same node. False otherwise.
+      */
+      bool operator==(const const_iterator& other) const;
+
+   private:
+      /** const_iterator(DEIntQueue& container, DEIntQueue::Node*)
+       * @brief   Constructor
+       * @param   container   The DEIntQueue the const_iterator is associated with
+       * @param   
+      */
+      const_iterator(const DEIntQueue::Node* initCur) : cur(initCur) {}
+      friend DEIntQueue;
+
+      const DEIntQueue::Node* cur;  // The current entry referenced by the const_iterator
    };
 
    /** begin()
     * @brief   Returns an iterator that references the first entry in this queue.
-    * @post    The returned iterator references this queue and its first entry.
+    * @post    The returned iterator references this queue's first entry.
     *          If this queue is empty, the iterator does not reference any entry
     *          and is equivalent to the one returned by end().
     * @return  An iterator that references the first entry in this queue.
    */
    iterator begin();
 
+   /** begin()
+    * @brief   Returns a const_iterator that references the first entry in this queue.
+    * @post    The returned const_iterator references this queue's first entry.
+    *          If this queue is empty, the const_iterator does not reference any entry
+    *          and is equivalent to the one returned by end().
+    * @return  A const_iterator that references the first entry in this queue.
+   */
+   const_iterator begin() const;
+
    /** last()
     * @brief   Returns an iterator that references the last entry in this queue.
-    * @post    The returned iterator references this queue and its last entry.
+    * @post    The returned iterator references this queue's last entry.
     *          If this queue is empty, the iterator does not reference any entry
     *          and is equivalent to the one returned by end().
     * @return  An iterator that references the last entry in this queue.
    */
    iterator last();
 
+   /** last()
+    * @brief   Returns a const_iterator that references the last entry in this queue.
+    * @post    The returned const_iterator references this queue's last entry.
+    *          If this queue is empty, the const_iterator does not reference any entry
+    *          and is equivalent to the one returned by end().
+    * @return  A const_iterator that references the last entry in this queue.
+   */
+   const_iterator last() const;
+
    /** end()
     * @brief   Returns an iterator that represents the end of this queue.
-    * @post    The returned iterator references this queue and does not reference
-    *          any entry.
+    * @post    The returned iterator does not reference any entry.
     * @return  An iterator that represents the end of this queue.
    */
-   iterator end();
+   iterator end() ;
+
+   /** end()
+    * @brief   Returns a const_iterator that represents the end of this queue.
+    * @post    The returned const_iterator does not reference any entry.
+    * @return  A const_iterator that represents the end of this queue.
+   */
+   const_iterator end() const;
 };
 
 /** operator<<(ostream&, const DEIntQueue&)

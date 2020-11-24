@@ -562,3 +562,127 @@ TEST_CASE("DEIntQueue iterator for an empty list throws exceptions for increment
    CHECK_THROWS_AS(*iter, std::out_of_range);
 }
 // END ITERATOR TESTS
+
+// CONST_ITERATOR TESTS
+TEST_CASE("DEIntQueue const_iterator returned by begin, last, and end for constant DEIntQueues", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+   const DEIntQueue constQueue(queue);
+
+   // Run
+   DEIntQueue::const_iterator begin = constQueue.begin();
+   DEIntQueue::const_iterator last = constQueue.last();
+   DEIntQueue::const_iterator end = constQueue.end();
+   // *begin = 3; //This line prevents compilation, as expected
+
+   // Test
+   REQUIRE(constQueue.front() == 0);
+}
+
+TEST_CASE("DEIntQueue const_iterator can access queue items in forward order", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+   const DEIntQueue constQueue(queue);
+   DEIntQueue::const_iterator iter = constQueue.begin();
+   REQUIRE(iter != constQueue.end());
+
+   // Run
+   for (int i = 0; i < 3; i++) {
+      // Test
+      CHECK(*iter == i);
+      ++iter;
+   }
+
+   // Test
+   REQUIRE(iter == constQueue.end());
+}
+
+TEST_CASE("DEIntQueue const_iterator returned by begin references first item", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+   const DEIntQueue constQueue(queue);
+
+   // Run
+   DEIntQueue::const_iterator iter = constQueue.begin();
+
+   // Test
+   REQUIRE(*iter == 0);
+}
+
+TEST_CASE("DEIntQueue const_iterator returned by last references last item", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+   const DEIntQueue constQueue(queue);
+
+   // Run
+   DEIntQueue::const_iterator iter = constQueue.last();
+
+   // Test
+   REQUIRE(*iter == 2);
+}
+
+TEST_CASE("DEIntQueue const_iterator can access queue items in reverse order", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+   const DEIntQueue constQueue(queue);
+   DEIntQueue::const_iterator iter = constQueue.last();
+   REQUIRE(iter != constQueue.end());
+
+   // Run
+   for (int i = 2; i >= 0; i--) {
+      // Test
+      CHECK(*iter == i);
+      --iter;
+   }
+
+   // Test
+   REQUIRE(iter == constQueue.end());
+}
+
+TEST_CASE("DEIntQueue const_iterator returned by begin() is equal to the one returned by end() after a decrement", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+   const DEIntQueue constQueue(queue);
+   DEIntQueue::const_iterator iter = constQueue.begin();
+   REQUIRE(iter != constQueue.end());
+
+   // Run
+   --iter;
+
+   // Test
+   REQUIRE(iter == constQueue.end());
+}
+
+TEST_CASE("DEIntQueue const_iterator for an empty list throws exceptions for increment, decrement, and dereference",
+   "[DEIntQueue]") {
+   // Setup
+   const DEIntQueue constQueue;
+   DEIntQueue::const_iterator iter = constQueue.begin();
+
+   // Test
+   CHECK(iter == constQueue.end());
+   CHECK_THROWS_AS(iter++, std::out_of_range);
+   CHECK_THROWS_AS(++iter, std::out_of_range);
+   CHECK_THROWS_AS(iter--, std::out_of_range);
+   CHECK_THROWS_AS(--iter, std::out_of_range);
+   CHECK_THROWS_AS(*iter, std::out_of_range);
+}
+// END CONST_ITERATOR TESTS

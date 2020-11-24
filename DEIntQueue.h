@@ -10,6 +10,7 @@
 
 class DEIntQueue {
 public:
+   //PUBLIC METHODS
    /** DEIntQueue()
     * @brief   Default constructor.
     * @post    This queue is empty and its size is 0.
@@ -98,6 +99,7 @@ public:
    */
    int numEntries() const;
 
+
 private:
    /** Node
     * @brief   Node struct used by DEIntQueue
@@ -132,6 +134,125 @@ private:
 
    // Allow access to private members by operator<<
    friend std::ostream& operator<<(std::ostream& outStream, const DEIntQueue& queueToPrint);
+
+public:
+   // ITERATOR
+   // Forward declarations and granting private access
+   class iterator;
+   friend DEIntQueue::iterator;
+
+   /** iterator
+    * @brief   Iterator for DEIntQueue
+   */
+   class iterator{
+   public:
+      /** iterator(DEIntQueue& container, DEIntQueue::Node*)
+       * @brief   Constructor
+       * @param   container   The DEIntQueue the iterator is associated with
+       * @param   
+      */
+      iterator(DEIntQueue& initContainer, DEIntQueue::Node* initCur) : container(initContainer), cur(initCur) {}
+
+      /** operator++()
+       * @brief   Prefix increment. Advances to the next item in its DEIntQueue.
+       * @pre     cur is not null.
+       * @post    This iterator references the next item that occurs in its DEIntQueue.
+       *          If the previous item was the last, then cur is set to null.
+       * @return  Reference to this iterator.
+       * @throw   std::out_of_range if cur is null.
+      */
+      iterator& operator++();
+
+      /** operator++(int)
+       * @brief   Postfix increment. Advances to the next item in its DEIntQueue.
+       * @pre     cur is not null.
+       * @post    This iterator references the next item that occurs in its DEIntQueue.
+       *          If the previous item was the last, then cur is set to null.
+       * @return  A copy of the iterator before it was modified.
+       * @throw   std::out_of_range if cur is null.
+      */
+      iterator operator++(int);
+
+      /** operator--()
+       * @brief   Prefix decrement. Moves to the preceding item in its DEIntQueue.
+       * @pre     cur is not null.
+       * @post    This iterator references the preceding item that occurs in its DEIntQueue.
+       *          If the previous item was the first, then cur is set to null.
+       * @return  Reference to this iterator.
+       * @throw   std::out_of_range if cur is null.
+       */
+      iterator& operator--();
+
+      /** operator--(int)
+       * @brief   Postfix decrement. Moves to the preceding item in its DEIntQueue.
+       * @pre     cur is not null.
+       * @post    This iterator references the preceding item that occurs in its DEIntQueue.
+       *          If the previous item was the first, then cur is set to null.
+       * @return  A copy of the iterator before it was modified.
+       * @throw   std::out_of_range if cur is null.
+       */
+      iterator operator--(int);
+
+      /** operator*()
+       * @brief   Dereference operator. Returns a reference to the integer stored in the
+       *          Node this iterator currently references.
+       * @pre     cur is not null
+       * @return  Reference to the integer stored in the Node this iterator currently references.
+       * @throw   std::out_of_range if cur is null.
+      */
+      int& operator*();
+
+      /** operator!=()
+       * @brief   Inequality operator.
+       * @param   other    The iterator being compared to
+       * @post    Returns true if the two iterators do not both have the same container and same node.
+       *          Returns false otherwise.
+       * @return  True if the two iterators do not both have the same container and same node.
+       *          False otherwise.
+      */
+      bool operator!=(const iterator& other) const;
+
+      /** operator==()
+       * @brief   Equality operator.
+       * @param   other    The iterator being compared to
+       * @post    Returns true if the two iterators both have the same container and same node.
+       *          Returns false otherwise.
+       * @return  True if the two iterators do not both have the same container and same node.
+       *          False otherwise.
+      */
+      bool operator==(const iterator& other) const;
+
+   private:
+      // DATA MEMBERS
+      DEIntQueue& container;  // The DEIntQueue the iterator is associated with
+      DEIntQueue::Node* cur;  // The current entry referenced by the iterator
+   };
+
+   /** begin()
+    * @brief   Returns an iterator that references the first entry in this queue.
+    * @post    The returned iterator references this queue and its first entry.
+    *          If this queue is empty, the iterator does not reference any entry
+    *          and is equivalent to the one returned by end().
+    * @return  An iterator that references the first entry in this queue.
+   */
+   iterator begin();
+
+   /** last()
+    * @brief   Returns an iterator that references the last entry in this queue.
+    * @post    The returned iterator references this queue and its last entry.
+    *          If this queue is empty, the iterator does not reference any entry
+    *          and is equivalent to the one returned by end().
+    * @return  An iterator that references the last entry in this queue.
+   */
+   iterator last();
+
+   /** end()
+    * @brief   Returns an iterator that represents the end of this queue.
+    * @post    The returned iterator references this queue and does not reference
+    *          any entry.
+    * @return  An iterator that represents the end of this queue.
+   */
+   iterator end();
 };
 
 /** operator<<(ostream&, const DEIntQueue&)

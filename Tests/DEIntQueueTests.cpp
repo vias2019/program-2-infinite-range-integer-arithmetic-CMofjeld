@@ -441,3 +441,124 @@ TEST_CASE("DEIntQueue assignment operator deep copies another queue", "[DEIntQue
    }
 }
 // END BIG THREE TESTS
+
+// ITERATOR TESTS
+TEST_CASE("DEIntQueue iterator can access queue items in forward order", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+   DEIntQueue::iterator iter = queue.begin();
+   REQUIRE(iter != queue.end());
+
+   // Run
+   for (int i = 0; i < 3; i++) {
+      // Test
+      CHECK(*iter == i);
+      ++iter;
+   }
+
+   // Test
+   REQUIRE(iter == queue.end());
+}
+
+TEST_CASE("DEIntQueue iterator returned by begin references first item", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+
+   // Run
+   DEIntQueue::iterator iter = queue.begin();
+
+   // Test
+   REQUIRE(*iter == 0);
+}
+
+TEST_CASE("DEIntQueue iterator returned by last references last item", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+
+   // Run
+   DEIntQueue::iterator iter = queue.last();
+
+   // Test
+   REQUIRE(*iter == 2);
+}
+
+TEST_CASE("DEIntQueue iterator can access queue items in reverse order", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+   DEIntQueue::iterator iter = queue.last();
+   REQUIRE(iter != queue.end());
+
+   // Run
+   for (int i = 2; i >= 0; i--) {
+      // Test
+      CHECK(*iter == i);
+      --iter;
+   }
+
+   // Test
+   REQUIRE(iter == queue.end());
+}
+
+TEST_CASE("DEIntQueue iterator can modify items in the queue", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   std::stringstream expected{"0 3 2 "};
+   std::stringstream actual;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+   DEIntQueue::iterator iter = queue.begin();
+   REQUIRE(iter != queue.end());
+
+   // Run
+   ++iter;
+   *iter = 3;
+   actual << queue;
+
+   // Test
+   REQUIRE(actual.str() == expected.str());
+}
+
+TEST_CASE("DEIntQueue iterator returned by begin() is equal to the one returned by end() after a decrement", "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   for (int i = 0; i < 3; i++) {
+      queue.pushBack(i);
+   }
+   DEIntQueue::iterator iter = queue.begin();
+   REQUIRE(iter != queue.end());
+
+   // Run
+   --iter;
+
+   // Test
+   REQUIRE(iter == queue.end());
+}
+
+TEST_CASE("DEIntQueue iterator for an empty list throws exceptions for increment, decrement, and dereference",
+   "[DEIntQueue]") {
+   // Setup
+   DEIntQueue queue;
+   DEIntQueue::iterator iter = queue.begin();
+
+   // Test
+   CHECK(iter == queue.end());
+   CHECK_THROWS_AS(iter++, std::out_of_range);
+   CHECK_THROWS_AS(++iter, std::out_of_range);
+   CHECK_THROWS_AS(iter--, std::out_of_range);
+   CHECK_THROWS_AS(--iter, std::out_of_range);
+   CHECK_THROWS_AS(*iter, std::out_of_range);
+}
+// END ITERATOR TESTS

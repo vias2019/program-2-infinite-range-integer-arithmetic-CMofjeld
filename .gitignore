@@ -38,7 +38,7 @@
 .vs/
 
 # Build files
-Build
+Build/*
 
 # VSCode workspace files
 .vscode

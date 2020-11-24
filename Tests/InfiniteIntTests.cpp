@@ -22,3 +22,33 @@ TEST_CASE("Default constructor creates an InfiniteInt representing 0", "[Infinit
    CHECK(actual.str() == expected.str());
    CHECK(ii.numDigits() == 1);
 }
+
+void testIntConstructor(const std::string& inputDescription, int input) {
+   SECTION(inputDescription) {
+      // Setup
+      int expectedDigits{0};
+      std::stringstream expectedOut;
+      std::stringstream actualOut;
+
+      // Run
+      expectedOut << input;
+      InfiniteInt ii(input);
+      actualOut << ii;
+      do {
+         ++expectedDigits;
+         input /= 10;
+      } while (input != 0);
+
+      // Test
+      CHECK(actualOut.str() == expectedOut.str());
+      CHECK(ii.numDigits() == expectedDigits);
+   }
+}
+
+TEST_CASE("Int constructor correctly converts to InfiniteInt", "[InfiniteInt]") {
+   testIntConstructor("Postive integers < INT_MAX", 123456);
+   testIntConstructor("Negative integers > INT_MIN", -123456);
+   testIntConstructor("Zero", 0);
+   testIntConstructor("INT_MAX", INT_MAX);
+   testIntConstructor("INT_MIN", INT_MIN);
+}

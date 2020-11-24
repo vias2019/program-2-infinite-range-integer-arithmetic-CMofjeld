@@ -7,15 +7,23 @@
 */
 
 #include "DEIntQueue.h" // Data structure used to store the list of digits
+#include <climits>      // INT_MIN and INT_MAX
 
 class InfiniteInt {
 public:
    //PUBLIC METHODS
    /** InfiniteInt()
     * @brief   Default constructor.
-    * @post    This InfiniteInt has a single digit, 0, and negative is false;
+    * @post    This InfiniteInt has a single digit, 0, and negative is false.
    */
    InfiniteInt();
+
+   /** InfiniteInt(int)
+    * @brief   Constructs an InfiniteInt that represents the given integer.
+    * @param   num   The integer to be converted to an InfiniteInt
+    * @post    This InfiniteInt has the same sign and digits as num.
+   */
+   explicit InfiniteInt(int num);
 
    /** numDigits()
     * @brief   Returns the number of decimal digits in the number represented

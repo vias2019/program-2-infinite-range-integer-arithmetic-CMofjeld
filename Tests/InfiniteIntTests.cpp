@@ -74,7 +74,7 @@ void testAddition(const std::string& inputDescription,
 }
 
 TEST_CASE("Addition produces expected result when both InfiniteInts have the same sign",
-          "[InfiniteInt]") {
+          "[InfiniteInt::operator+]") {
    testAddition("Both > 0, same # of digits", InfiniteInt(123456), InfiniteInt(456789), "580245");
    testAddition("Both < 0, same # of digits", InfiniteInt(-123456), InfiniteInt(-456789), "-580245");
    testAddition("lhs = 0, rhs > 0", InfiniteInt(0), InfiniteInt(456789), "456789");
@@ -86,9 +86,9 @@ TEST_CASE("Addition produces expected result when both InfiniteInts have the sam
    testAddition("Both = 0", InfiniteInt(0), InfiniteInt(0), "0");
 }
 
-TEST_CASE("Addition handles InfiniteInts with different signs", "[InfiniteInt]") {
+TEST_CASE("Addition handles InfiniteInts with different signs", "[InfiniteInt::operator+]") {
    testAddition("lhs > 0, lhs = -(rhs)", InfiniteInt(-123456), InfiniteInt(123456), "0");
-   testAddition("lhs < 0, lhs = -(rhs)", InfiniteInt(-123456), InfiniteInt(123456), "0");
+   testAddition("lhs < 0, lhs = -(rhs)", InfiniteInt(123456), InfiniteInt(-123456), "0");
    testAddition("lhs < 0, rhs > 0, |lhs| < |rhs|, same # digits", InfiniteInt(-199), InfiniteInt(200), "1");
    testAddition("lhs > 0, rhs < 0, |lhs| < |rhs|, same # digits", InfiniteInt(199), InfiniteInt(-200), "-1");
    testAddition("lhs < 0, rhs > 0, |lhs| > |rhs|, same # digits", InfiniteInt(-200), InfiniteInt(199), "-1");
@@ -159,3 +159,50 @@ TEST_CASE("Less than operator returns false when # of digits differ", "[Infinite
    testLessThan("Both < 0, rhs has more digits", InfiniteInt(-45678), InfiniteInt(-456789), false);
 }
 // END LESS THAN TESTS
+
+// SUBTRACTION TESTS
+void testSubtraction(const std::string& inputDescription,
+                  const InfiniteInt& lhs,
+                  const InfiniteInt& rhs,
+                  const InfiniteInt& expectedResult) {
+   SECTION(inputDescription) {
+      // Setup
+      std::stringstream stringResult;
+
+      // Run
+      InfiniteInt testResult = lhs - rhs;
+
+      // Test
+      CHECK(testResult == expectedResult);
+   }
+}
+
+TEST_CASE("Subtraction handles InfiniteInts with same sign", "[InfiniteInt::operator-]") {
+   testSubtraction("Both > 0, same # of digits, |lhs| < |rhs|", InfiniteInt(199), InfiniteInt(200), InfiniteInt(-1));
+   testSubtraction("Both > 0, same # of digits, |lhs| > |rhs|", InfiniteInt(200), InfiniteInt(199), InfiniteInt(1));
+   testSubtraction("Both > 0, lhs = rhs", InfiniteInt(123456), InfiniteInt(123456), InfiniteInt(0));
+   testSubtraction("Both < 0, same # of digits, |lhs| < |rhs|", InfiniteInt(-199), InfiniteInt(-200), InfiniteInt(1));
+   testSubtraction("Both < 0, same # of digits, |lhs| > |rhs|", InfiniteInt(-200), InfiniteInt(-199), InfiniteInt(-1));
+   testSubtraction("Both < 0, lhs = rhs", InfiniteInt(-123456), InfiniteInt(-123456), InfiniteInt(0));
+   testSubtraction("lhs = 0, rhs > 0", InfiniteInt(0), InfiniteInt(456789), InfiniteInt(-456789));
+   testSubtraction("lhs = 0, rhs < 0", InfiniteInt(0), InfiniteInt(-456789), InfiniteInt(456789));
+   testSubtraction("rhs = 0, lhs > 0", InfiniteInt(456789), InfiniteInt(0), InfiniteInt(456789));
+   testSubtraction("rhs = 0, lhs < 0", InfiniteInt(-456789), InfiniteInt(0), InfiniteInt(-456789));
+   testSubtraction("Both > 0, lhs has more digits", InfiniteInt(123456), InfiniteInt(789), InfiniteInt(122667));
+   testSubtraction("Both > 0, rhs has more digits", InfiniteInt(789), InfiniteInt(123456), InfiniteInt(-122667));
+   testSubtraction("Both < 0, lhs has more digits", InfiniteInt(-123456), InfiniteInt(-789), InfiniteInt(-122667));
+   testSubtraction("Both < 0, rhs has more digits", InfiniteInt(-789), InfiniteInt(-123456), InfiniteInt(122667));
+   testSubtraction("Both = 0", InfiniteInt(0), InfiniteInt(0), InfiniteInt(0));
+}
+
+TEST_CASE("Subtraction handles InfiniteInts with different signs", "[InfiniteInt::operator-]") {
+   testSubtraction("lhs < 0, rhs > 0, |lhs| < |rhs|, same # digits", InfiniteInt(-199), InfiniteInt(200), InfiniteInt(-399));
+   testSubtraction("lhs > 0, rhs < 0, |lhs| < |rhs|, same # digits", InfiniteInt(199), InfiniteInt(-200), InfiniteInt(399));
+   testSubtraction("lhs < 0, rhs > 0, |lhs| > |rhs|, same # digits", InfiniteInt(-200), InfiniteInt(199), InfiniteInt(-399));
+   testSubtraction("lhs > 0, rhs < 0, |lhs| > |rhs|, same # digits", InfiniteInt(200), InfiniteInt(-199), InfiniteInt(399));
+   testSubtraction("lhs < 0, rhs > 0, |lhs| > |rhs|, different # digits", InfiniteInt(-1000), InfiniteInt(999), InfiniteInt(-1999));
+   testSubtraction("lhs > 0, rhs < 0, |lhs| > |rhs|, different # digits", InfiniteInt(1000), InfiniteInt(-999), InfiniteInt(1999));
+   testSubtraction("lhs < 0, rhs > 0, |lhs| > |rhs|, different # digits", InfiniteInt(-999), InfiniteInt(1000), InfiniteInt(-1999));
+   testSubtraction("lhs > 0, rhs < 0, |lhs| > |rhs|, different # digits", InfiniteInt(999), InfiniteInt(-1000), InfiniteInt(1999));
+}
+// END SUBTRACTION TESTS

@@ -45,6 +45,16 @@ public:
    */
    InfiniteInt operator+(const InfiniteInt& rhs) const;
 
+   /** operator-(const InfiniteInt&)
+    * @brief   Subtracts the number represented by another InfiniteInt from that represented
+    *          by this one and returns the result as an InfiniteInt.
+    * @param   rhs   The InfiniteInt to subtract from this one
+    * @post    The returned InfiniteInt represents the difference of this InfinteInt's
+    *          number and rhs's.
+    * @return  InfiniteInt representing the difference of this InfinteInt's number and rhs's.
+   */
+   InfiniteInt operator-(const InfiniteInt& rhs) const;
+
    /** operator==(const InfiniteInt& rhs)
     * @brief   Equality operator. Checks if this InfiniteInt represents the same integer
     *          as another.
@@ -92,6 +102,16 @@ private:
    InfiniteInt add(const InfiniteInt& lhs, const InfiniteInt& rhs) const;
 
    /** subtract(const InfiniteInt& rhs)
+    * @brief   Helper method to subtract InfiniteInts.
+    * @param   lhs   The InfiniteInt being subtracted from
+    * @param   rhs   InfiniteInt being subtracted from lhs
+    * @post    The returned InfiniteInt represents the difference of the absolute values of
+    *          lhs's number and rhs's.
+    * @return  InfiniteInt representing the difference of lhs's number and rhs's.
+   */
+   InfiniteInt subtract(const InfiniteInt& lhs, const InfiniteInt& rhs) const;
+
+   /** subtractAbs(const InfiniteInt& rhs)
     * @brief   Helper method to subtract InfiniteInts. Ignores the sign of both InfiniteInts.
     * @param   lhs   The larger of the two InfiniteInts
     * @param   rhs   InfiniteInt being subtracted from lhs
@@ -101,7 +121,7 @@ private:
     *          lhs's number and rhs's.
     * @return  InfiniteInt representing the difference of the absolute values of lhs's number and rhs's.
    */
-   InfiniteInt subtract(const InfiniteInt& lhs, const InfiniteInt& rhs) const;
+   InfiniteInt subtractAbs(const InfiniteInt& lhs, const InfiniteInt& rhs) const;
 
    /** removeLeadingZeroes()
     * @brief   Removes any leading zero digits from this InfiniteInt.

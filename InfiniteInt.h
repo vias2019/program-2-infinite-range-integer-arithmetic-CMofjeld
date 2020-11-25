@@ -51,14 +51,34 @@ public:
     * @param   rhs   The InfiniteInt being compared to.
     * @post    The returned value is true if both InfiniteInts have the same sign and the
     *          same digits in the same order. Otherwise, it is false.
-    * @return  True if this InfiniteInt is equal to rhs and false, otherwise.
+    * @return  True if this InfiniteInt is equal to rhs and false otherwise.
    */
    bool operator==(const InfiniteInt& rhs) const;
+
+   /** operator!=(const InfiniteInt& rhs)
+    * @brief   Inequality operator. Checks if this InfiniteInt represents the same integer
+    *          as another.
+    * @param   rhs   The InfiniteInt being compared to.
+    * @post    The returned value is false if both InfiniteInts have the same sign and the
+    *          same digits in the same order. Otherwise, it is true.
+    * @return  False if this InfiniteInt is equal to rhs and true otherwise.
+   */
+   bool operator!=(const InfiniteInt& rhs) const;
+
+   /** operator<(const InfiniteInt& rhs)
+    * @brief   Less-than operator. Checks if the integer this InfiniteInt represents
+    *          is less than that of another.
+    * @param   rhs   The InfiniteInt being compared to.
+    * @post    The returned value is true if this InfiniteInt's integer is less than
+    *          rhs's and false otherwise.
+    * @return  True if this InfiniteInt is less than rhs and false otherwise.
+   */
+   bool operator<(const InfiniteInt& rhs) const;
 
 private:
    // DATA MEMBERS
    DEIntQueue digits;   // stores the digits in this InfiniteInt (ordered from highest digit to lowest)
-   bool negative;       // indicates if the number represented is negative (true) or positive (false)
+   bool isNegative;     // indicates if the number represented is negative (true) or positive (false)
 
    // PRIVATE METHODS
    /** add(const InfiniteInt&, const InfiniteInt&)
@@ -83,12 +103,18 @@ private:
    */
    InfiniteInt subtract(const InfiniteInt& lhs, const InfiniteInt& rhs) const;
 
+   /** removeLeadingZeroes()
+    * @brief   Removes any leading zero digits from this InfiniteInt.
+    * @post    All leading zero digits, other than the ones digit, have been removed from this InfiniteInt.
+   */
+   void removeLeadingZeroes();
+
    /** setNegative(bool isNegative)
     * @brief   Sets the sign of this InfiniteInt
-    * @param   isNegative  New value for negative
-    * @post    negative == isNegative
+    * @param   negative  New value for isNegative
+    * @post    isNegative == negative
    */
-   void setNegative(bool isNegative);
+   void setNegative(bool negative);
 
    // Allow access to private members by operator<<
    friend std::ostream& operator<<(std::ostream& outStream, const InfiniteInt& IIToPrint);

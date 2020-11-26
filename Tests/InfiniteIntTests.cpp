@@ -55,6 +55,67 @@ TEST_CASE("Int constructor correctly converts to InfiniteInt", "[InfiniteInt]") 
 }
 // END CONSTRUCTOR TESTS
 
+// DEEP COPY TESTS
+void testCopyCtor(const std::string& inputDescription,
+                  const InfiniteInt& original) {
+   SECTION(inputDescription) {
+      // Setup
+      InfiniteInt copyControl(original);
+      InfiniteInt copyToChange(original);
+      REQUIRE(copyControl == original);
+      REQUIRE(copyToChange == original);
+
+      // Run
+      copyToChange = copyToChange + InfiniteInt(1);
+
+      // Test
+      CHECK(copyControl == original);
+      CHECK(copyToChange != original);
+   }
+}
+
+TEST_CASE("Copy constructor performs a deep copy", "[InfiniteInt deep copy]") {
+   testCopyCtor("Original > 0 with 1 digit", InfiniteInt(4));
+   testCopyCtor("Original < 0 with 1 digit", InfiniteInt(-4));
+   testCopyCtor("Original > 0 with > 1 digit", InfiniteInt(123));
+   testCopyCtor("Original < 0 with > 1 digit", InfiniteInt(-123));
+   testCopyCtor("Original = 0", InfiniteInt(0));
+}
+
+void testAssignment(const std::string& inputDescription,
+                    int copyControlInitialVal,
+                    int copyToChangeInitialVal,
+                    int originalInitialVal) {
+   SECTION(inputDescription) {
+      // Setup
+      InfiniteInt copyControl(copyControlInitialVal);
+      InfiniteInt copyToChange(copyToChangeInitialVal);
+      InfiniteInt original(originalInitialVal);
+      REQUIRE(copyControl != original);
+      REQUIRE(copyToChange != original);
+      copyControl = original;
+      copyToChange = original;
+      REQUIRE(copyControl == original);
+      REQUIRE(copyToChange == original);
+
+      // Run
+      copyToChange = copyToChange + InfiniteInt(1);
+
+      // Test
+      CHECK(copyControl == original);
+      CHECK(copyToChange != original);
+   }
+}
+
+TEST_CASE("Operator= performs a deep copy", "[InfiniteInt deep copy]") {
+   testAssignment("Original > 0 with 1 digit", -123, 321, 4);
+   testAssignment("Original < 0 with 1 digit", 8, -9, -4);
+   testAssignment("Original > 0 with > 1 digit", 123456, -321, 123);
+   testAssignment("Original < 0 with > 1 digit", 321, -123456, -123);
+   testAssignment("Original = 0", 123, -9, 0);
+}
+// END DEEP COPY TESTS
+
 // ADDITION TESTS
 void testAddition(const std::string& inputDescription,
                   const InfiniteInt& lhs,

@@ -48,6 +48,39 @@ InfiniteInt::InfiniteInt(int num) {
    } while (num != 0);
 }
 
+/** operator int()
+ * @brief   Conversion operator. Returns the number represented by this
+ *          InfiniteInt as an integer.
+ * @pre     The number represented by this InfiniteInt is not greater than
+ *          INT_MAX and not less than INT_MIN.
+ * @post    The returned value is equal to the number represented by this
+ *          InfiniteInt.
+ * @return  The number represented by this InfiniteInt as an integer.
+ * @throw   std::range_error if the result would be outside the range
+ *          representable by an int.
+*/
+InfiniteInt::operator int() const {
+   // Check for range error
+   if ((InfiniteInt(INT_MAX) < *this) ||
+      (*this < InfiniteInt(INT_MIN))) {
+      throw std::range_error("InfiniteInt outside range representable by int.");
+   }
+
+   int result{0}; // The conversion of this InfiniteInt to an int
+
+   // Starting with the highest digit, add the digits one-by-one to the result
+   for (auto currentDigit = digits.begin(); currentDigit != digits.end(); ++currentDigit) {
+      result *= 10;              // Move the previous digit left
+      result += *currentDigit;   // Append the current digit
+   }
+
+   // Fix the sign, if necessary, and return the result
+   if (isNegative) {
+      result *= -1;
+   }
+   return result;
+}
+
 /** numDigits()
  * @brief   Returns the number of decimal digits in the number represented
  *          by this InfiniteInt.

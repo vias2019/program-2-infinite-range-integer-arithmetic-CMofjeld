@@ -25,6 +25,19 @@ public:
    */
    explicit InfiniteInt(int num);
 
+   /** operator int()
+    * @brief   Conversion operator. Returns the number represented by this
+    *          InfiniteInt as an integer.
+    * @pre     The number represented by this InfiniteInt is not greater than
+    *          INT_MAX and not less than INT_MIN.
+    * @post    The returned value is equal to the number represented by this
+    *          InfiniteInt.
+    * @return  The number represented by this InfiniteInt as an integer.
+    * @throw   std::range_error if the result would be outside the range
+    *          representable by an int.
+   */
+   operator int() const;
+
    /** numDigits()
     * @brief   Returns the number of decimal digits in the number represented
     *          by this InfiniteInt.

@@ -116,6 +116,51 @@ TEST_CASE("Operator= performs a deep copy", "[InfiniteInt deep copy]") {
 }
 // END DEEP COPY TESTS
 
+// OPERATOR INT TESTS
+void testOperatorInt(const std::string& inputDescription,
+                     const InfiniteInt& testInput,
+                     int expectedResult,
+                     bool shouldThrowException) {
+   SECTION(inputDescription) {
+      // Setup
+      bool didThrowException = false;
+
+      // Run
+      try {
+         int actualResult = int(testInput);
+         // Test
+         CHECK(actualResult == expectedResult);
+      }
+      catch(std::range_error) {
+         didThrowException = true;
+      }
+
+      // Test
+      CHECK(didThrowException == shouldThrowException);
+   }
+}
+
+TEST_CASE("Operator int produces expected values when input in legal range", "[InfiniteInt::operator int]") {
+   testOperatorInt("0 < Input < INT_MAX, # digits > 1", InfiniteInt(123456), 123456, false);
+   testOperatorInt("INT_MIN < Input < 0, # digits > 1", InfiniteInt(-456789), -456789, false);
+   testOperatorInt("0 < Input < INT_MAX, # digits = 1", InfiniteInt(2), 2, false);
+   testOperatorInt("INT_MIN < Input < 0, # digits = 1", InfiniteInt(-4), -4, false);
+   testOperatorInt("Input = 0", InfiniteInt(0), 0, false);
+   testOperatorInt("Input = INT_MAX", InfiniteInt(INT_MAX), INT_MAX, false);
+   testOperatorInt("Input = INT_MIN", InfiniteInt(INT_MIN), INT_MIN, false);
+}
+
+TEST_CASE("Operator int throws an exception when input outside legal range", "[InfiniteInt::operator int]") {
+   InfiniteInt tooBig(INT_MAX);
+   tooBig = tooBig + InfiniteInt(1);
+   testOperatorInt("Input > INT_MAX", tooBig, 0, true);
+   
+   InfiniteInt tooSmall(INT_MIN);
+   tooSmall = tooSmall - InfiniteInt(1);
+   testOperatorInt("Input < INT_MIN", tooSmall, 0, true);
+}
+// END OPERATOR INT TESTS
+
 // ADDITION TESTS
 void testAddition(const std::string& inputDescription,
                   const InfiniteInt& lhs,

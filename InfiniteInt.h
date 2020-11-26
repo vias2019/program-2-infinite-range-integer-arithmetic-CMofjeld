@@ -55,6 +55,16 @@ public:
    */
    InfiniteInt operator-(const InfiniteInt& rhs) const;
 
+   /** operator*(const InfiniteInt&)
+    * @brief   Multiplies the number represented by another InfiniteInt with that represented
+    *          by this one and returns the result as an InfiniteInt.
+    * @param   rhs   The InfiniteInt to multiply with this one
+    * @post    The returned InfiniteInt represents the product of this InfinteInt's
+    *          number and rhs's.
+    * @return  InfiniteInt representing the product of this InfinteInt's number and rhs's.
+   */
+   InfiniteInt operator*(const InfiniteInt& rhs) const;
+
    /** operator==(const InfiniteInt& rhs)
     * @brief   Equality operator. Checks if this InfiniteInt represents the same integer
     *          as another.

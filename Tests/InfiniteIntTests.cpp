@@ -75,7 +75,7 @@ void testAddition(const std::string& inputDescription,
 
 TEST_CASE("Addition produces expected result when both InfiniteInts have the same sign",
           "[InfiniteInt::operator+]") {
-   testAddition("Both > 0, same # of digits", InfiniteInt(123456), InfiniteInt(456789), "580245");
+   testAddition("Both > 0, same # of digits", InfiniteInt(999), InfiniteInt(999), "1998");
    testAddition("Both < 0, same # of digits", InfiniteInt(-123456), InfiniteInt(-456789), "-580245");
    testAddition("lhs = 0, rhs > 0", InfiniteInt(0), InfiniteInt(456789), "456789");
    testAddition("lhs > 0, rhs = 0", InfiniteInt(456789), InfiniteInt(0), "456789");
@@ -206,3 +206,54 @@ TEST_CASE("Subtraction handles InfiniteInts with different signs", "[InfiniteInt
    testSubtraction("lhs > 0, rhs < 0, |lhs| > |rhs|, different # digits", InfiniteInt(999), InfiniteInt(-1000), InfiniteInt(1999));
 }
 // END SUBTRACTION TESTS
+
+// MULTIPLICATION TESTS
+void testMultiplication(const std::string& inputDescription,
+                  const InfiniteInt& lhs,
+                  const InfiniteInt& rhs,
+                  const std::string& expectedResult) {
+   SECTION(inputDescription) {
+      // Setup
+      InfiniteInt initialResult;
+      std::stringstream actualResult;
+
+      // Run
+      initialResult = lhs * rhs;
+      actualResult << initialResult;
+
+      // Test
+      CHECK(actualResult.str() == expectedResult);
+   }
+}
+
+TEST_CASE("Multiplication handles either argument being zero", "[InfiniteInt::operator*]") {
+   testMultiplication("lhs = 0, rhs > 0", InfiniteInt(0), InfiniteInt(321), "0");
+   testMultiplication("lhs = 0, rhs < 0", InfiniteInt(0), InfiniteInt(-2), "0");
+   testMultiplication("lhs = 0, rhs = 0", InfiniteInt(0), InfiniteInt(0), "0");
+   testMultiplication("lhs > 0, rhs = 0", InfiniteInt(2), InfiniteInt(0), "0");
+   testMultiplication("lhs < 0, rhs = 0", InfiniteInt(-321), InfiniteInt(0), "0");
+}
+
+TEST_CASE("Multiplication handles either argument being one or negative one", "[InfiniteInt::operator*]") {
+   // one
+   testMultiplication("lhs = 1, rhs > 0", InfiniteInt(1), InfiniteInt(321), "321");
+   testMultiplication("lhs = 1, rhs < 0", InfiniteInt(1), InfiniteInt(-2), "-2");
+   testMultiplication("lhs = 1, rhs = 1", InfiniteInt(1), InfiniteInt(1), "1");
+   testMultiplication("lhs > 0, rhs = 1", InfiniteInt(2), InfiniteInt(1), "2");
+   testMultiplication("lhs < 0, rhs = 1", InfiniteInt(-321), InfiniteInt(1), "-321");
+
+   // negative one
+   testMultiplication("lhs = -1, rhs > 0", InfiniteInt(-1), InfiniteInt(321), "-321");
+   testMultiplication("lhs = -1, rhs < 0", InfiniteInt(-1), InfiniteInt(-2), "2");
+   testMultiplication("lhs = -1, rhs = -1", InfiniteInt(-1), InfiniteInt(-1), "1");
+   testMultiplication("lhs > 0, rhs = -1", InfiniteInt(2), InfiniteInt(-1), "-2");
+   testMultiplication("lhs < 0, rhs = -1", InfiniteInt(-321), InfiniteInt(-1), "321");
+}
+
+TEST_CASE("Multiplication handles both arguments having > 1 digit", "[InfiniteInt::operator*]") {
+   testMultiplication("lhs > 0, rhs > 0", InfiniteInt(123456), InfiniteInt(456789), "56393342784");
+   testMultiplication("lhs > 0, rhs < 0", InfiniteInt(456789), InfiniteInt(-123456), "-56393342784");
+   testMultiplication("lhs < 0, rhs > 0", InfiniteInt(-654321), InfiniteInt(987654), "-646242752934");
+   testMultiplication("lhs < 0, rhs < 0", InfiniteInt(-987654), InfiniteInt(-654321), "646242752934");
+}
+// END MULTIPLICATION TESTS

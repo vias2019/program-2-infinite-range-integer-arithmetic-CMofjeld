@@ -92,7 +92,7 @@ InfiniteInt InfiniteInt::operator+(const InfiniteInt& rhs) const {
  * @return  InfiniteInt representing the difference of this InfinteInt's number and rhs's.
 */
 InfiniteInt InfiniteInt::operator-(const InfiniteInt& rhs) const {
-   InfiniteInt result;           // The result of subtracting the two InfiniteInts
+   InfiniteInt result;  // The result of subtracting the two InfiniteInts
 
    // Check signs to determine which helper to call and the sign of the result
    if (isNegative != rhs.isNegative) {
@@ -103,6 +103,60 @@ InfiniteInt InfiniteInt::operator-(const InfiniteInt& rhs) const {
       result = subtract(*this, rhs);
    }
 
+   return result;
+}
+
+/** operator*(const InfiniteInt&)
+ * @brief   Multiplies the number represented by another InfiniteInt with that represented
+ *          by this one and returns the result as an InfiniteInt.
+ * @param   rhs   The InfiniteInt to multiply with this one
+ * @post    The returned InfiniteInt represents the product of this InfinteInt's
+ *          number and rhs's.
+ * @return  InfiniteInt representing the product of this InfinteInt's number and rhs's.
+*/
+InfiniteInt InfiniteInt::operator*(const InfiniteInt& rhs) const {
+   InfiniteInt result{0};     // The result of multiplying the two InfiniteInts
+   int digitResult{0};        // The result of multiplying two digits
+   int carry{0};              // The carry value after multiplying two digits
+   int numZeroes{0}; // The number of zeroes to add onto partial result (effectively multiplying by powers of 10)
+
+   // Check if either InfiniteInt is zero
+   if ((*this == result) || (rhs == result)) {
+      return result;
+   } else {
+      result.digits.popFront();
+   }
+
+   // Multiply each digit in rhs with every digit in lhs
+   for (auto rhsCur = rhs.digits.last(); rhsCur != rhs.digits.end(); --rhsCur) {
+      InfiniteInt partialResult;       // The result of multiplying one digit from rhs with all of lhs
+      partialResult.digits.popFront(); // Remove default zero value
+
+      // Multiply the current digit in rhs with every digit in lhs
+      for (auto lhsCur = digits.last(); lhsCur != digits.end(); --lhsCur) {
+         digitResult = *lhsCur * *rhsCur + carry;           // multiply the digits
+         partialResult.digits.pushFront(digitResult % 10);  // record the result
+         carry = digitResult / 10;                          // calculate the carry
+      }
+
+      // Check for a final carry
+      if (carry > 0) {
+         partialResult.digits.pushFront(carry);
+      }
+      
+      // Add zeroes onto partial result to multiply by powers of ten
+      for (int i = 0; i < numZeroes; ++i) {
+         partialResult.digits.pushBack(0);
+      }
+
+      // Add to total result and reset/update variables for next digit of rhs
+      result = add(result, partialResult);
+      carry = 0;
+      ++numZeroes;
+   }
+
+   // Determine the sign of the result and return it
+   result.isNegative = isNegative != rhs.isNegative;
    return result;
 }
 
@@ -144,6 +198,11 @@ InfiniteInt InfiniteInt::add(const InfiniteInt& lhs, const InfiniteInt& rhs) con
       result.digits.pushFront(partialSum % 10);
       carry = partialSum / 10;
       --rhsCur;
+   }
+
+   // Check for a final carry
+   if (carry > 0) {
+      result.digits.pushFront(carry);
    }
 
    return result;

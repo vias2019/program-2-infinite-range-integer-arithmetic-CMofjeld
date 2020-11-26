@@ -99,6 +99,12 @@ public:
    */
    int numEntries() const;
 
+   /** clear
+    * @brief   Removes all the entries from this queue.
+    * @post    This queue is empty and all dynamically allocated memory has been
+    *          returned to the system.
+   */
+   void clear();
 
 private:
    /** Node
@@ -116,13 +122,6 @@ private:
    Node* tail;    // pointer to the last Node in the queue
 
    // PRIVATE FUNCTIONS
-   /** clear
-    * @brief   Removes all the entries from this queue.
-    * @post    This queue is empty and all dynamically allocated memory has been
-    *          returned to the system.
-   */
-   void clear();
-
    /** copy
     * @brief   Copies the contents of another queue into this queue.
     * @param   toCopy   The queue being copied

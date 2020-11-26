@@ -56,8 +56,8 @@ TEST_CASE("Int constructor correctly converts to InfiniteInt", "[InfiniteInt]") 
 // END CONSTRUCTOR TESTS
 
 // DEEP COPY TESTS
-void testCopyCtor(const std::string& inputDescription,
-                  const InfiniteInt& original) {
+void testCopyCtor(const std::string& inputDescription, const InfiniteInt& original)
+{
    SECTION(inputDescription) {
       // Setup
       InfiniteInt copyControl(original);
@@ -85,7 +85,8 @@ TEST_CASE("Copy constructor performs a deep copy", "[InfiniteInt deep copy]") {
 void testAssignment(const std::string& inputDescription,
                     int copyControlInitialVal,
                     int copyToChangeInitialVal,
-                    int originalInitialVal) {
+                    int originalInitialVal)
+{
    SECTION(inputDescription) {
       // Setup
       InfiniteInt copyControl(copyControlInitialVal);
@@ -120,7 +121,8 @@ TEST_CASE("Operator= performs a deep copy", "[InfiniteInt deep copy]") {
 void testOperatorInt(const std::string& inputDescription,
                      const InfiniteInt& testInput,
                      int expectedResult,
-                     bool shouldThrowException) {
+                     bool shouldThrowException)
+{
    SECTION(inputDescription) {
       // Setup
       bool didThrowException = false;
@@ -165,7 +167,8 @@ TEST_CASE("Operator int throws an exception when input outside legal range", "[I
 void testAddition(const std::string& inputDescription,
                   const InfiniteInt& lhs,
                   const InfiniteInt& rhs,
-                  const std::string& expectedResult) {
+                  const std::string& expectedResult)
+{
    SECTION(inputDescription) {
       // Setup
       std::stringstream stringResult;
@@ -210,7 +213,8 @@ TEST_CASE("Addition handles InfiniteInts with different signs", "[InfiniteInt::o
 void testEquality(const std::string& inputDescription,
                   const InfiniteInt& lhs,
                   const InfiniteInt& rhs,
-                  bool expectedResult) {
+                  bool expectedResult)
+{
    SECTION(inputDescription) {
       // Test
       REQUIRE((lhs == rhs) == expectedResult);
@@ -240,7 +244,8 @@ TEST_CASE("Equality operator returns false when signs differ", "[InfiniteInt]") 
 void testLessThan(const std::string& inputDescription,
                   const InfiniteInt& lhs,
                   const InfiniteInt& rhs,
-                  bool expectedResult) {
+                  bool expectedResult)
+{
    SECTION(inputDescription) {
       // Test
       REQUIRE((lhs < rhs) == expectedResult);
@@ -268,9 +273,10 @@ TEST_CASE("Less than operator returns false when # of digits differ", "[Infinite
 
 // SUBTRACTION TESTS
 void testSubtraction(const std::string& inputDescription,
-                  const InfiniteInt& lhs,
-                  const InfiniteInt& rhs,
-                  const InfiniteInt& expectedResult) {
+                     const InfiniteInt& lhs,
+                     const InfiniteInt& rhs,
+                     const InfiniteInt& expectedResult)
+{
    SECTION(inputDescription) {
       // Setup
       std::stringstream stringResult;
@@ -315,9 +321,10 @@ TEST_CASE("Subtraction handles InfiniteInts with different signs", "[InfiniteInt
 
 // MULTIPLICATION TESTS
 void testMultiplication(const std::string& inputDescription,
-                  const InfiniteInt& lhs,
-                  const InfiniteInt& rhs,
-                  const std::string& expectedResult) {
+                        const InfiniteInt& lhs,
+                        const InfiniteInt& rhs,
+                        const std::string& expectedResult)
+{
    SECTION(inputDescription) {
       // Setup
       InfiniteInt initialResult;
@@ -363,3 +370,71 @@ TEST_CASE("Multiplication handles both arguments having > 1 digit", "[InfiniteIn
    testMultiplication("lhs < 0, rhs < 0", InfiniteInt(-987654), InfiniteInt(-654321), "646242752934");
 }
 // END MULTIPLICATION TESTS
+
+// OPERATOR>> TESTS
+void testStreamInput(const std::string& inputDescription,
+                     const std::string& inputText,
+                     const InfiniteInt& testII,
+                     const std::string& expectedIIValueAfterRead,
+                     int expectedNumCharsRead)  // -1 if all characters were read
+{
+   SECTION(inputDescription) {
+      // Setup
+      std::stringstream inputStream(inputText);
+      std::stringstream IIValueAfterRead;
+      InfiniteInt IIToReadInto(testII); // create local copy so we can modify it
+
+      // Run
+      inputStream >> IIToReadInto;
+      IIValueAfterRead << IIToReadInto;
+
+      // Test
+      CHECK(IIValueAfterRead.str() == expectedIIValueAfterRead);
+      CHECK(inputStream.tellg() == expectedNumCharsRead);
+   }
+}
+
+TEST_CASE("Operator>> works as expected for good inputs with no leading whitespace or '-' and no following characters", "[InfiniteInt operator>>]") {
+   testStreamInput("InfiniteInt is positive, has 1 digit, and stream has 1 digit", "0", InfiniteInt(1), "0", -1);
+   testStreamInput("InfiniteInt is negative, has 1 digit, and stream has 1 digit", "4", InfiniteInt(-1), "4", -1);
+   testStreamInput("InfiniteInt is positive, has > 1 digit, and stream has 1 digit", "7", InfiniteInt(456), "7", -1);
+   testStreamInput("InfiniteInt is negative, has > 1 digit, and stream has 1 digit", "9", InfiniteInt(-456), "9", -1);
+   testStreamInput("InfiniteInt is positive, has 1 digit, and stream has > 1 digit", "9876543210987654321", InfiniteInt(1), "9876543210987654321", -1);
+   testStreamInput("InfiniteInt is negative, has 1 digit, and stream has > 1 digit", "12345678901234567890", InfiniteInt(-1), "12345678901234567890", -1);
+   testStreamInput("InfiniteInt is positive, has > 1 digit, and stream has > 1 digit", "12345678901234567890", InfiniteInt(456), "12345678901234567890", -1);
+   testStreamInput("InfiniteInt is negative, has > 1 digit, and stream has > 1 digit", "9876543210987654321", InfiniteInt(-456), "9876543210987654321", -1);
+}
+
+TEST_CASE("Operator>> works as expected for good negative inputs with no leading whitespace and no following characters", "[InfiniteInt operator>>]") {
+   testStreamInput("InfiniteInt is positive and stream has 1 digit", "-7", InfiniteInt(456), "-7", -1);
+   testStreamInput("InfiniteInt is negative and stream has 1 digit", "-9", InfiniteInt(-456), "-9", -1);
+   testStreamInput("InfiniteInt is positive and stream has > 1 digit", "-12345678901234567890", InfiniteInt(456), "-12345678901234567890", -1);
+   testStreamInput("InfiniteInt is negative and stream has > 1 digit", "-9876543210987654321", InfiniteInt(-456), "-9876543210987654321", -1);
+}
+
+TEST_CASE("Operator>> ignores leading whitespace", "[InfiniteInt operator>>]") {
+   testStreamInput("Spaces", "   7", InfiniteInt(456), "7", -1);
+   testStreamInput("Tabs", "\t\t\t9", InfiniteInt(-456), "9", -1);
+   testStreamInput("Newlines", "\n\n\n12345678901234567890", InfiniteInt(456), "12345678901234567890", -1);
+   testStreamInput("Carriage returns", "\r\r\r9876543210987654321", InfiniteInt(-456), "9876543210987654321", -1);
+}
+
+TEST_CASE("Operator>> stops reading at non-digit characters", "[InfiniteInt operator>>]") {
+   testStreamInput("Following characters are whitespace, reading 1 digit", "0  5678", InfiniteInt(456), "0", 1);
+   testStreamInput("Following characters are not whitespace, reading 1 digit", "9abc5678", InfiniteInt(456), "9", 1);
+   testStreamInput("Following characters are whitespace, reading > 1 digit", "1234  5678", InfiniteInt(456), "1234", 4);
+   testStreamInput("Following characters are not whitespace, reading > 1 digit", "1234abc5678", InfiniteInt(456), "1234", 4);
+}
+
+TEST_CASE("Operator>> discards leading zeroes", "[InfiniteInt operator>>]") {
+   testStreamInput("One leading zero", "05678", InfiniteInt(456), "5678", -1);
+   testStreamInput("More than one leading zero", "0001234", InfiniteInt(456), "1234", -1);
+   testStreamInput("All zeroes", "00000", InfiniteInt(456), "0", -1);
+}
+
+TEST_CASE("Operator>> sets the InfiniteInt to zero for bad inputs", "[InfiniteInt operator>>]") {
+   testStreamInput("First character read is non-digit, non-whitespace", "a5678", InfiniteInt(456), "0", 0);
+   testStreamInput("First character after whitespace is non-digit", " z1234", InfiniteInt(456), "0", 1);
+   testStreamInput("Minus sign followed by non-digit", "--1234", InfiniteInt(456), "0", 0);
+}
+// END OPERATOR>> TESTS

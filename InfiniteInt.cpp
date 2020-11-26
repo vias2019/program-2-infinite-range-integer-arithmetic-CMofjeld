@@ -474,3 +474,64 @@ std::ostream& operator<<(std::ostream& outStream, const InfiniteInt& IIToPrint) 
    // Return stream
    return outStream;
 }
+
+/** operator>>(istream&, const InfiniteInt&)
+ * @brief   Reads digits from an input stream and inputs them into an InfiniteInt
+ * @param   inStream    The stream to read from
+ * @param   IIToFill    The InfiniteInt to read into
+ * @pre     inStream is not in an error state when the function is called
+ * @post    All initial whitespace characters in inStream have been discarded.
+ *          If the first non-whitespace character is a digit ('0' - '9'),
+ *          all consecutive digits immediately following the first have been read
+ *          from the stream and IIToFill contains those same digits in the same
+ *          order in which they were read. If the first character was '-' followed
+ *          by at least one digit, then the InfiniteInt has been set to be negative
+ *          and all consecutive digits have been read and stored, as before. In
+ *          all other cases, the InfiniteInt is set to zero.
+ * @return  Reference to the modified stream.
+*/
+std::istream& operator>>(std::istream& inStream, InfiniteInt& IIToFill) {
+   // Reset the InfiniteInt
+   IIToFill.digits.clear();
+   IIToFill.isNegative = false;
+
+   // Discard leading whitespace
+   inStream >> std::ws;
+
+   // Check for minus sign
+   if (inStream.peek() == '-') {
+      IIToFill.isNegative = true;
+      inStream.ignore(1);  // remove '-' from the stream
+   }
+
+   // Discard any leading zeroes
+   while (inStream.peek() == '0') {
+      inStream.ignore(1);
+   }
+
+   // Read in digits and store them
+   char currentChar;    // latest character read from the stream
+   while (inStream.get(currentChar)) {
+      if (std::isdigit(currentChar)) {
+         IIToFill.digits.pushBack(currentChar - '0');
+      } else {
+         // Not a digit - put it back in the stream and stop reading
+         inStream.putback(currentChar);
+         break;
+      }
+   }
+
+   // If no digits were read from inStream, set the InfiniteInt to zero
+   if (IIToFill.digits.numEntries() == 0) {
+      IIToFill.digits.pushBack(0);
+      
+      /* Check whether a leading '-' was read from inStream.
+         If so, put it back and set IIToFill to be positive. */
+      if (IIToFill.isNegative) {
+         inStream.putback('-');
+         IIToFill.isNegative = false;
+      }
+   }
+
+   return inStream;
+}

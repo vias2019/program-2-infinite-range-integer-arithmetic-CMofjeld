@@ -202,7 +202,7 @@ InfiniteInt InfiniteInt::operator*(const InfiniteInt& rhs) const {
 */
 InfiniteInt InfiniteInt::add(const InfiniteInt& lhs, const InfiniteInt& rhs) const {
    InfiniteInt result;        // The result of adding the InfiniteInts
-   result.digits.popFront();  // Remove default 0 digit
+   result.digits.clear();     // Remove default 0 digit
    int partialSum{0};         // The total from summing two digits
    int carry{0};              // The carry value after summing two digits
    auto lhsCur = lhs.digits.last(); // iterator for lhs starting at ones digit
@@ -252,48 +252,24 @@ InfiniteInt InfiniteInt::add(const InfiniteInt& lhs, const InfiniteInt& rhs) con
 InfiniteInt InfiniteInt::subtract(const InfiniteInt& lhs, const InfiniteInt& rhs) const {
    // Need to subtract the smaller absolute value from the larger
    InfiniteInt result;           // The result of subtracting the two InfiniteInts
+   result.digits.clear();        // Remove default 0 digit
    InfiniteInt lhsCopy(lhs);     // copy of lhs that can be changed
    InfiniteInt rhsCopy(rhs);     // copy of rhs that can be changed
-   lhsCopy.isNegative = false;
-   rhsCopy.isNegative = false;
 
    // Find largest absolute value and compute the difference
+   lhsCopy.isNegative = false;
+   rhsCopy.isNegative = false;
    const InfiniteInt& larger = lhsCopy < rhsCopy ? rhsCopy : lhsCopy;
    const InfiniteInt& smaller = &larger == &lhsCopy ? rhsCopy : lhsCopy;
-   result = subtractAbs(larger, smaller);
 
-   // Fix the sign of the result, if necessary
-   if (result != InfiniteInt(0)) {
-      if ((lhs.isNegative && (&larger == &lhsCopy)) ||
-         (!lhs.isNegative && (&larger == &rhsCopy))) {
-         result.isNegative = true;
-      }
-   }  // Otherwise result should be positive, which it is by default
-
-   return result;
-}
-
-/** subtractAbs(const InfiniteInt& rhs)
- * @brief   Helper method to subtract InfiniteInts. Ignores the sign of both InfiniteInts.
- * @param   lhs   The larger of the two InfiniteInts
- * @param   rhs   InfiniteInt being subtracted from lhs
- * @pre     The absolute value of lhs's number must be greater than or equal to the
- *          absolute value of rhs's number.
- * @post    The returned InfiniteInt represents the difference of the absolute values of
- *          lhs's number and rhs's.
- * @return  InfiniteInt representing the difference of the absolute values of lhs's number and rhs's.
-*/
-InfiniteInt InfiniteInt::subtractAbs(const InfiniteInt& lhs, const InfiniteInt& rhs) const {
-   InfiniteInt result;        // The result of subtracting the InfiniteInts
-   result.digits.popFront();  // Remove default 0 digit
    int partialDiff{0};        // The total from subtracting two digits
    int borrow{0};             // The borrow value after subtracting two digits
-   auto lhsCur = lhs.digits.last(); // iterator for lhs starting at ones digit
-   auto rhsCur = rhs.digits.last(); // iterator for rhs starting at ones digit
+   auto largerCur = larger.digits.last();   // iterator for top InfiniteInt
+   auto smallerCur = smaller.digits.last(); // iterator for bottom InfiniteInt
 
    // While both IIs have digits, subtract them one-by-one and record in result
-   while (lhsCur != lhs.digits.end() && rhsCur != rhs.digits.end()) {
-      partialDiff = *lhsCur - *rhsCur - borrow;   // subtract the digits
+   while (largerCur != larger.digits.end() && smallerCur != smaller.digits.end()) {
+      partialDiff = *largerCur - *smallerCur - borrow;   // subtract the digits
 
       // Check if borrow needed
       if (partialDiff < 0) {
@@ -307,13 +283,13 @@ InfiniteInt InfiniteInt::subtractAbs(const InfiniteInt& lhs, const InfiniteInt& 
       result.digits.pushFront(partialDiff);
 
       // Go to next highest digits (ones digit is at the end so we need to decrement)
-      --lhsCur;
-      --rhsCur;
+      --largerCur;
+      --smallerCur;
    }
 
    // While lhs still has digits, add them to the result (accounting for borrows)
-   while (lhsCur != lhs.digits.end()) {
-      partialDiff = *lhsCur - borrow;
+   while (largerCur != larger.digits.end()) {
+      partialDiff = *largerCur - borrow;
       if (partialDiff < 0) {
          partialDiff += 10;
          borrow = 1;
@@ -321,11 +297,19 @@ InfiniteInt InfiniteInt::subtractAbs(const InfiniteInt& lhs, const InfiniteInt& 
          borrow = 0;
       }
       result.digits.pushFront(partialDiff);
-      --lhsCur;
+      --largerCur;
    }
 
-   // Remove any leading zeroes and return the result
+
+   // Remove any leading zeroes and fix the sign of the result, if necessary
    result.removeLeadingZeroes();
+   if (result != InfiniteInt(0)) {
+      if ((lhs.isNegative && (&larger == &lhsCopy)) ||
+         (!lhs.isNegative && (&larger == &rhsCopy))) {
+         result.isNegative = true;
+      }
+   }  // Otherwise result should be positive, which it is by default
+   
    return result;
 }
 

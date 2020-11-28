@@ -115,12 +115,14 @@ private:
 
    // PRIVATE METHODS
    /** add(const InfiniteInt&, const InfiniteInt&)
-    * @brief   Helper method to add InfiniteInts. Ignores the sign of both InfiniteInts.
+    * @brief   Helper method to add InfiniteInts. Ignores the sign of both
+    * InfiniteInts.
     * @param   lhs   First InfiniteInt to add
     * @param   rhs   Second InfiniteInt to add
-    * @post    The returned InfiniteInt represents the sum of the absolute values of
-    *          lhs's number and rhs's.
-    * @return  InfiniteInt representing the sum of the absolute values of lhs's number and rhs's.
+    * @post    The returned InfiniteInt represents the sum of the absolute
+    *          values of lhs's number and rhs's.
+    * @return  InfiniteInt representing the sum of the absolute values of lhs's
+    *          number and rhs's.
    */
    InfiniteInt add(const InfiniteInt& lhs, const InfiniteInt& rhs) const;
 
@@ -128,27 +130,17 @@ private:
     * @brief   Helper method to subtract InfiniteInts.
     * @param   lhs   The InfiniteInt being subtracted from
     * @param   rhs   InfiniteInt being subtracted from lhs
-    * @post    The returned InfiniteInt represents the difference of the absolute values of
-    *          lhs's number and rhs's.
-    * @return  InfiniteInt representing the difference of lhs's number and rhs's.
+    * @post    The returned InfiniteInt represents the difference of lhs's
+    *          number and rhs's.
+    * @return  InfiniteInt representing the difference of lhs's number and
+    * rhs's.
    */
    InfiniteInt subtract(const InfiniteInt& lhs, const InfiniteInt& rhs) const;
 
-   /** subtractAbs(const InfiniteInt& rhs)
-    * @brief   Helper method to subtract InfiniteInts. Ignores the sign of both InfiniteInts.
-    * @param   lhs   The larger of the two InfiniteInts
-    * @param   rhs   InfiniteInt being subtracted from lhs
-    * @pre     The absolute value of lhs's number must be greater than or equal to the
-    *          absolute value of rhs's number.
-    * @post    The returned InfiniteInt represents the difference of the absolute values of
-    *          lhs's number and rhs's.
-    * @return  InfiniteInt representing the difference of the absolute values of lhs's number and rhs's.
-   */
-   InfiniteInt subtractAbs(const InfiniteInt& lhs, const InfiniteInt& rhs) const;
-
    /** removeLeadingZeroes()
     * @brief   Removes any leading zero digits from this InfiniteInt.
-    * @post    All leading zero digits, other than the ones digit, have been removed from this InfiniteInt.
+    * @post    All leading zero digits, other than the ones digit, have been
+    *          removed from this InfiniteInt.
    */
    void removeLeadingZeroes();
 

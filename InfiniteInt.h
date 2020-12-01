@@ -110,8 +110,8 @@ public:
 
 private:
    // DATA MEMBERS
-   DEIntQueue digits;   // stores the digits in this InfiniteInt (ordered from highest digit to lowest)
-   bool isNegative;     // indicates if the number represented is negative (true) or positive (false)
+   DEIntQueue digits_;   // stores the digits in this InfiniteInt (ordered from highest digit to lowest)
+   bool isNegative_;     // indicates if the number represented is negative (true) or positive (false)
 
    // PRIVATE METHODS
    /** add(const InfiniteInt&, const InfiniteInt&)
@@ -133,7 +133,7 @@ private:
     * @post    The returned InfiniteInt represents the difference of lhs's
     *          number and rhs's.
     * @return  InfiniteInt representing the difference of lhs's number and
-    * rhs's.
+    *          rhs's.
    */
    InfiniteInt subtract(const InfiniteInt& lhs, const InfiniteInt& rhs) const;
 
@@ -143,13 +143,6 @@ private:
     *          removed from this InfiniteInt.
    */
    void removeLeadingZeroes();
-
-   /** setNegative(bool isNegative)
-    * @brief   Sets the sign of this InfiniteInt
-    * @param   negative  New value for isNegative
-    * @post    isNegative == negative
-   */
-   void setNegative(bool negative);
 
    // Allow access to private members by stream I/O
    friend std::ostream& operator<<(std::ostream& outStream, const InfiniteInt& IIToPrint);

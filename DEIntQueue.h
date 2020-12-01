@@ -15,7 +15,7 @@ public:
     * @brief   Default constructor.
     * @post    This queue is empty and its size is 0.
    */
-   DEIntQueue() : size(0), head(nullptr), tail(nullptr) { }
+   DEIntQueue() : size_(0), head_(nullptr), tail_(nullptr) { }
 
    /** DEIntQueue(const DEIntQueue&)
     * @brief   Copy constructor.
@@ -111,15 +111,15 @@ private:
     * @brief   Node struct used by DEIntQueue
    */
    struct Node {
-      int data;   // integer stored in this Node
-      Node* prev; // pointer to the previous Node in the queue
-      Node* next; // pointer to the next Node in the queue
+      int data_;   // integer stored in this Node
+      Node* prev_; // pointer to the previous Node in the queue
+      Node* next_; // pointer to the next Node in the queue
    };
 
    // DATA MEMBERS
-   int size;      // # of entries in the queue
-   Node* head;    // pointer to the first Node in the queue
-   Node* tail;    // pointer to the last Node in the queue
+   int size_;      // # of entries in the queue
+   Node* head_;    // pointer to the first Node in the queue
+   Node* tail_;    // pointer to the last Node in the queue
 
    // PRIVATE FUNCTIONS
    /** copy
@@ -215,10 +215,10 @@ public:
        * @param   container   The DEIntQueue the iterator is associated with
        * @param   
       */
-      iterator(DEIntQueue::Node* initCur) : cur(initCur) {}
+      iterator(DEIntQueue::Node* initCur) : cur_(initCur) {}
       friend DEIntQueue;
 
-      DEIntQueue::Node* cur;  // The current entry referenced by the iterator
+      DEIntQueue::Node* cur_;  // The current entry referenced by the iterator
    };
 
    class const_iterator{
@@ -296,10 +296,10 @@ public:
        * @param   container   The DEIntQueue the const_iterator is associated with
        * @param   
       */
-      const_iterator(const DEIntQueue::Node* initCur) : cur(initCur) {}
+      const_iterator(const DEIntQueue::Node* initCur) : cur_(initCur) {}
       friend DEIntQueue;
 
-      const DEIntQueue::Node* cur;  // The current entry referenced by the const_iterator
+      const DEIntQueue::Node* cur_;  // The current entry referenced by the const_iterator
    };
 
    /** begin()

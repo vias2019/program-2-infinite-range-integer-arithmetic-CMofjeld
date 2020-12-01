@@ -53,17 +53,17 @@ void DEIntQueue::pushFront(int newItem) {
    // Add it to the front
    if (numEntries() == 0) {
       // The queue is empty - need to update tail as well as head
-      head = newNode;
-      tail = newNode;
+      head_ = newNode;
+      tail_ = newNode;
    } else {
-      // The queue is not empty - need to update previous head's prev pointer
-      head->prev = newNode;
-      newNode->next = head;
-      head = newNode;
+      // The queue is not empty - need to update previous head_'s prev pointer
+      head_->prev_ = newNode;
+      newNode->next_ = head_;
+      head_ = newNode;
    }
 
    // Update number of entries
-   ++size;
+   ++size_;
 }
 
 /** pushBack(int)
@@ -79,17 +79,17 @@ void DEIntQueue::pushBack(int newItem) {
    // Add it to the front
    if (numEntries() == 0) {
       // The queue is empty - need to update tail as well as head
-      head = newNode;
-      tail = newNode;
+      head_ = newNode;
+      tail_ = newNode;
    } else {
       // The queue is not empty - need to update previous tail's next pointer
-      tail->next = newNode;
-      newNode->prev = tail;
-      tail = newNode;
+      tail_->next_ = newNode;
+      newNode->prev_ = tail_;
+      tail_ = newNode;
    }
 
    // Update number of entries
-   ++size;
+   ++size_;
 }
 
 /** front()
@@ -105,7 +105,7 @@ int DEIntQueue::front() const {
       throw std::logic_error("DEIntQueue::front() called on empty queue.");
    }
 
-   return head->data;
+   return head_->data_;
 }
 
 /** back()
@@ -121,7 +121,7 @@ int DEIntQueue::back() const {
       throw std::logic_error("DEIntQueue::back() called on empty queue.");
    }
 
-   return tail->data;
+   return tail_->data_;
 }
 
 /** popFront()
@@ -136,18 +136,18 @@ void DEIntQueue::popFront() {
       throw std::logic_error("DEIntQueue::front() called on empty queue.");
    }
 
-   Node* toDelete = head;  // the node to delete
+   Node* toDelete = head_;  // the node to delete
 
    // Update the queue
    if (numEntries() == 1) {
       // Need to update both head and tail pointers
-      head = tail = nullptr;
+      head_ = tail_ = nullptr;
    } else {
       // Need to update prev pointer of next node in the queue
-      head = head->next;
-      head->prev = nullptr;
+      head_ = head_->next_;
+      head_->prev_ = nullptr;
    }
-   --size;
+   --size_;
 
    // Deallocate the deleted node
    delete toDelete;
@@ -166,18 +166,18 @@ void DEIntQueue::popBack() {
       throw std::logic_error("DEIntQueue::front() called on empty queue.");
    }
 
-   Node* toDelete = tail;  // the node to delete
+   Node* toDelete = tail_;  // the node to delete
 
    // Update the queue
    if (numEntries() == 1) {
       // Need to update both head and tail pointers
-      head = tail = nullptr;
+      head_ = tail_ = nullptr;
    } else {
       // Need to update next pointer of previous node in the queue
-      tail = tail->prev;
-      tail->next = nullptr;
+      tail_ = tail_->prev_;
+      tail_->next_ = nullptr;
    }
-   --size;
+   --size_;
 
    // Deallocate the deleted node
    delete toDelete;
@@ -191,7 +191,7 @@ void DEIntQueue::popBack() {
  * @returns The number of entries in this queue.
 */
 int DEIntQueue::numEntries() const {
-   return size;
+   return size_;
 }
 
 /** clear
@@ -203,7 +203,7 @@ void DEIntQueue::clear() {
    while (numEntries() > 0) {
       popFront();
    }
-   size = 0;
+   size_ = 0;
 }
 
 /** copy
@@ -214,13 +214,13 @@ void DEIntQueue::clear() {
  *          The new entries are deep copies.
 */
 void DEIntQueue::copy(const DEIntQueue& toCopy) {
-   size = 0;
-   if (toCopy.head == nullptr) {
+   size_ = 0;
+   if (toCopy.head_ == nullptr) {
       // Other list is empty
-      head = tail = nullptr;
+      head_ = tail_ = nullptr;
    } else {
-      for (Node* copyCur = toCopy.tail; copyCur != nullptr; copyCur = copyCur->prev) {
-         pushFront(copyCur->data);
+      for (Node* copyCur = toCopy.tail_; copyCur != nullptr; copyCur = copyCur->prev_) {
+         pushFront(copyCur->data_);
       }
    }
 }
@@ -235,8 +235,8 @@ void DEIntQueue::copy(const DEIntQueue& toCopy) {
  * @return  Reference to the modified stream.
 */
 std::ostream& operator<<(std::ostream& outStream, const DEIntQueue& queueToPrint) {
-   for (DEIntQueue::Node* cur = queueToPrint.head; cur != nullptr; cur = cur->next) {
-      outStream << cur->data << ' ';
+   for (DEIntQueue::Node* cur = queueToPrint.head_; cur != nullptr; cur = cur->next_) {
+      outStream << cur->data_ << ' ';
    }
    return outStream;
 }
@@ -252,10 +252,10 @@ std::ostream& operator<<(std::ostream& outStream, const DEIntQueue& queueToPrint
  * @throw   std::out_of_range if cur is null.
 */
 DEIntQueue::iterator& DEIntQueue::iterator::operator++() {
-   if (cur == nullptr) {
+   if (cur_ == nullptr) {
       throw std::out_of_range("Called increment on DEIntQueue::iterator that references no entry.");
    }
-   cur = cur->next;
+   cur_ = cur_->next_;
    return *this;
 }
 
@@ -268,11 +268,11 @@ DEIntQueue::iterator& DEIntQueue::iterator::operator++() {
  * @throw   std::out_of_range if cur is null.
 */
 DEIntQueue::iterator DEIntQueue::iterator::operator++(int) {
-   if (cur == nullptr) {
+   if (cur_ == nullptr) {
       throw std::out_of_range("Called increment on DEIntQueue::iterator that references no entry.");
    }
    iterator copy(*this);
-   cur = cur->next;
+   cur_ = cur_->next_;
    return copy;
 }
 
@@ -285,10 +285,10 @@ DEIntQueue::iterator DEIntQueue::iterator::operator++(int) {
  * @throw   std::out_of_range if cur is null.
  */
 DEIntQueue::iterator& DEIntQueue::iterator::operator--() {
-   if (cur == nullptr) {
+   if (cur_ == nullptr) {
       throw std::out_of_range("Called increment on DEIntQueue::iterator that references no entry.");
    }
-   cur = cur->prev;
+   cur_ = cur_->prev_;
    return *this;
 }
 
@@ -301,11 +301,11 @@ DEIntQueue::iterator& DEIntQueue::iterator::operator--() {
  * @throw   std::out_of_range if cur is null.
  */
 DEIntQueue::iterator DEIntQueue::iterator::operator--(int) {
-   if (cur == nullptr) {
+   if (cur_ == nullptr) {
       throw std::out_of_range("Called increment on DEIntQueue::iterator that references no entry.");
    }
    iterator copy(*this);
-   cur = cur->prev;
+   cur_ = cur_->prev_;
    return copy;
 }
 
@@ -317,10 +317,10 @@ DEIntQueue::iterator DEIntQueue::iterator::operator--(int) {
  * @throw   std::out_of_range if cur is null.
 */
 int& DEIntQueue::iterator::operator*() {
-   if (cur == nullptr) {
+   if (cur_ == nullptr) {
       throw std::out_of_range("Called dereference on DEIntQueue::iterator that references no entry.");
    }
-   return cur->data;
+   return cur_->data_;
 }
 
 /** operator!=()
@@ -344,7 +344,7 @@ bool DEIntQueue::iterator::operator!=(const iterator& other) const {
  *          False otherwise.
 */
 bool DEIntQueue::iterator::operator==(const iterator& other) const {
-   return cur == other.cur;
+   return cur_ == other.cur_;
 }
 
 /** begin()
@@ -355,7 +355,7 @@ bool DEIntQueue::iterator::operator==(const iterator& other) const {
  * @return  An iterator that references the first entry in this queue.
 */
 DEIntQueue::iterator DEIntQueue::begin() {
-   return iterator(head);
+   return iterator(head_);
 }
 
 /** begin()
@@ -366,7 +366,7 @@ DEIntQueue::iterator DEIntQueue::begin() {
  * @return  A const_iterator that references the first entry in this queue.
 */
 DEIntQueue::const_iterator DEIntQueue::begin() const {
-   return const_iterator(head);
+   return const_iterator(head_);
 }
 
 /** last()
@@ -377,7 +377,7 @@ DEIntQueue::const_iterator DEIntQueue::begin() const {
  * @return  An iterator that references the last entry in this queue.
 */
 DEIntQueue::iterator DEIntQueue::last() {
-   return iterator(tail);
+   return iterator(tail_);
 }
 
 /** last()
@@ -388,7 +388,7 @@ DEIntQueue::iterator DEIntQueue::last() {
  * @return  A const_iterator that references the last entry in this queue.
 */
 DEIntQueue::const_iterator DEIntQueue::last() const {
-   return const_iterator(tail);
+   return const_iterator(tail_);
 }
 
 /** end()
@@ -422,10 +422,10 @@ DEIntQueue::const_iterator DEIntQueue::end() const {
  * @throw   std::out_of_range if cur is null.
 */
 DEIntQueue::const_iterator& DEIntQueue::const_iterator::operator++() {
-   if (cur == nullptr) {
+   if (cur_ == nullptr) {
       throw std::out_of_range("Called increment on DEIntQueue::const_iterator that references no entry.");
    }
-   cur = cur->next;
+   cur_ = cur_->next_;
    return *this;
 }
 
@@ -438,11 +438,11 @@ DEIntQueue::const_iterator& DEIntQueue::const_iterator::operator++() {
  * @throw   std::out_of_range if cur is null.
 */
 DEIntQueue::const_iterator DEIntQueue::const_iterator::operator++(int) {
-   if (cur == nullptr) {
+   if (cur_ == nullptr) {
       throw std::out_of_range("Called increment on DEIntQueue::const_iterator that references no entry.");
    }
    const_iterator copy(*this);
-   cur = cur->next;
+   cur_ = cur_->next_;
    return copy;
 }
 
@@ -455,10 +455,10 @@ DEIntQueue::const_iterator DEIntQueue::const_iterator::operator++(int) {
  * @throw   std::out_of_range if cur is null.
  */
 DEIntQueue::const_iterator& DEIntQueue::const_iterator::operator--() {
-   if (cur == nullptr) {
+   if (cur_ == nullptr) {
       throw std::out_of_range("Called increment on DEIntQueue::const_iterator that references no entry.");
    }
-   cur = cur->prev;
+   cur_ = cur_->prev_;
    return *this;
 }
 
@@ -471,11 +471,11 @@ DEIntQueue::const_iterator& DEIntQueue::const_iterator::operator--() {
  * @throw   std::out_of_range if cur is null.
  */
 DEIntQueue::const_iterator DEIntQueue::const_iterator::operator--(int) {
-   if (cur == nullptr) {
+   if (cur_ == nullptr) {
       throw std::out_of_range("Called increment on DEIntQueue::const_iterator that references no entry.");
    }
    const_iterator copy(*this);
-   cur = cur->prev;
+   cur_ = cur_->prev_;
    return copy;
 }
 
@@ -487,10 +487,10 @@ DEIntQueue::const_iterator DEIntQueue::const_iterator::operator--(int) {
  * @throw   std::out_of_range if cur is null.
 */
 const int& DEIntQueue::const_iterator::operator*() {
-   if (cur == nullptr) {
+   if (cur_ == nullptr) {
       throw std::out_of_range("Called dereference on DEIntQueue::const_iterator that references no entry.");
    }
-   return cur->data;
+   return cur_->data_;
 }
 
 /** operator!=()
@@ -514,5 +514,5 @@ bool DEIntQueue::const_iterator::operator!=(const const_iterator& other) const {
  *          False otherwise.
 */
 bool DEIntQueue::const_iterator::operator==(const const_iterator& other) const {
-   return cur == other.cur;
+   return cur_ == other.cur_;
 }

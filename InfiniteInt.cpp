@@ -12,8 +12,8 @@
  * @brief   Default constructor.
  * @post    This InfiniteInt has a single digit, 0, and isNegative is false.
 */
-InfiniteInt::InfiniteInt() : isNegative(false) {
-   digits.pushFront(0);
+InfiniteInt::InfiniteInt() : isNegative_(false) {
+   digits_.pushFront(0);
 }
 
 /** InfiniteInt(int)
@@ -28,22 +28,22 @@ InfiniteInt::InfiniteInt(int num) {
          absolute value is greater than INT_MAX. Here we take off the lowest
          digit to make num small enough to convert in the following block that
          checks for negative inputs */
-      digits.pushFront(abs(num % 10));
+      digits_.pushFront(abs(num % 10));
       num /= 10;
    }
 
    // Check for negative input
    if (num < 0) {
-      isNegative = true;
+      isNegative_ = true;
       num = abs(num);
    } else {
-      isNegative = false;
+      isNegative_ = false;
    }
 
    // Push digits one by one to the list of digits.
    // Using a do/while guarantees 0 will be handled correctly.
    do {
-      digits.pushFront(num % 10);
+      digits_.pushFront(num % 10);
       num /= 10;
    } while (num != 0);
 }
@@ -69,13 +69,13 @@ InfiniteInt::operator int() const {
    int result{0}; // The conversion of this InfiniteInt to an int
 
    // Starting with the highest digit, add the digits one-by-one to the result
-   for (auto currentDigit = digits.begin(); currentDigit != digits.end(); ++currentDigit) {
+   for (auto currentDigit = digits_.begin(); currentDigit != digits_.end(); ++currentDigit) {
       result *= 10;              // Move the previous digit left
       result += *currentDigit;   // Append the current digit
    }
 
    // Fix the sign, if necessary, and return the result
-   if (isNegative) {
+   if (isNegative_) {
       result *= -1;
    }
    return result;
@@ -90,7 +90,7 @@ InfiniteInt::operator int() const {
  *          InfiniteInt.
 */
 int InfiniteInt::numDigits() const {
-   return digits.numEntries();
+   return digits_.numEntries();
 }
 
 /** operator+(const InfiniteInt&)
@@ -105,10 +105,10 @@ InfiniteInt InfiniteInt::operator+(const InfiniteInt& rhs) const {
    InfiniteInt result;  // The result of adding the two InfiniteInts
 
    // Check signs to determine which helper to call and the sign of the result
-   if (isNegative == rhs.isNegative) {
+   if (isNegative_ == rhs.isNegative_) {
       // Same sign - simply add absolute values and set sign to be the same
       result = add(*this, rhs);
-      result.isNegative = isNegative;
+      result.isNegative_ = isNegative_;
    } else {
       result = subtract(*this, rhs);
    }
@@ -128,10 +128,10 @@ InfiniteInt InfiniteInt::operator-(const InfiniteInt& rhs) const {
    InfiniteInt result;  // The result of subtracting the two InfiniteInts
 
    // Check signs to determine which helper to call and the sign of the result
-   if (isNegative != rhs.isNegative) {
+   if (isNegative_ != rhs.isNegative_) {
       // Different signs - add the absolute values
       result = add(*this, rhs);
-      result.isNegative = isNegative;
+      result.isNegative_ = isNegative_;
    } else {
       result = subtract(*this, rhs);
    }
@@ -157,29 +157,29 @@ InfiniteInt InfiniteInt::operator*(const InfiniteInt& rhs) const {
    if ((*this == result) || (rhs == result)) {
       return result;
    } else {
-      result.digits.popFront();
+      result.digits_.popFront();
    }
 
    // Multiply each digit in rhs with every digit in lhs
-   for (auto rhsCur = rhs.digits.last(); rhsCur != rhs.digits.end(); --rhsCur) {
+   for (auto rhsCur = rhs.digits_.last(); rhsCur != rhs.digits_.end(); --rhsCur) {
       InfiniteInt partialResult;       // The result of multiplying one digit from rhs with all of lhs
-      partialResult.digits.popFront(); // Remove default zero value
+      partialResult.digits_.popFront(); // Remove default zero value
 
       // Multiply the current digit in rhs with every digit in lhs
-      for (auto lhsCur = digits.last(); lhsCur != digits.end(); --lhsCur) {
+      for (auto lhsCur = digits_.last(); lhsCur != digits_.end(); --lhsCur) {
          digitResult = *lhsCur * *rhsCur + carry;           // multiply the digits
-         partialResult.digits.pushFront(digitResult % 10);  // record the result
+         partialResult.digits_.pushFront(digitResult % 10);  // record the result
          carry = digitResult / 10;                          // calculate the carry
       }
 
       // Check for a final carry
       if (carry > 0) {
-         partialResult.digits.pushFront(carry);
+         partialResult.digits_.pushFront(carry);
       }
       
       // Add zeroes onto partial result to multiply by powers of ten
       for (int i = 0; i < numZeroes; ++i) {
-         partialResult.digits.pushBack(0);
+         partialResult.digits_.pushBack(0);
       }
 
       // Add to total result and reset/update variables for next digit of rhs
@@ -189,7 +189,7 @@ InfiniteInt InfiniteInt::operator*(const InfiniteInt& rhs) const {
    }
 
    // Determine the sign of the result and return it
-   result.isNegative = isNegative != rhs.isNegative;
+   result.isNegative_ = isNegative_ != rhs.isNegative_;
    return result;
 }
 
@@ -202,16 +202,16 @@ InfiniteInt InfiniteInt::operator*(const InfiniteInt& rhs) const {
 */
 InfiniteInt InfiniteInt::add(const InfiniteInt& lhs, const InfiniteInt& rhs) const {
    InfiniteInt result;        // The result of adding the InfiniteInts
-   result.digits.clear();     // Remove default 0 digit
+   result.digits_.clear();     // Remove default 0 digit
    int partialSum{0};         // The total from summing two digits
    int carry{0};              // The carry value after summing two digits
-   auto lhsCur = lhs.digits.last(); // iterator for lhs starting at ones digit
-   auto rhsCur = rhs.digits.last(); // iterator for rhs starting at ones digit
+   auto lhsCur = lhs.digits_.last(); // iterator for lhs starting at ones digit
+   auto rhsCur = rhs.digits_.last(); // iterator for rhs starting at ones digit
 
    // While both IIs have digits, add them one-by-one and record in result
-   while (lhsCur != lhs.digits.end() && rhsCur != rhs.digits.end()) {
+   while (lhsCur != lhs.digits_.end() && rhsCur != rhs.digits_.end()) {
       partialSum = *lhsCur + *rhsCur + carry;   // add the digits
-      result.digits.pushFront(partialSum % 10); // record result
+      result.digits_.pushFront(partialSum % 10); // record result
       carry = partialSum / 10;                  // calculate carry
 
       // Go to next highest digits (ones digit is at the end so we need to decrement)
@@ -220,22 +220,22 @@ InfiniteInt InfiniteInt::add(const InfiniteInt& lhs, const InfiniteInt& rhs) con
    }
 
    // While either II still has digits, add them to the result (accounting for carries)
-   while (lhsCur != lhs.digits.end()) {
+   while (lhsCur != lhs.digits_.end()) {
       partialSum = *lhsCur + carry;
-      result.digits.pushFront(partialSum % 10);
+      result.digits_.pushFront(partialSum % 10);
       carry = partialSum / 10;
       --lhsCur;
    }
-   while (rhsCur != rhs.digits.end()) {
+   while (rhsCur != rhs.digits_.end()) {
       partialSum = *rhsCur + carry;
-      result.digits.pushFront(partialSum % 10);
+      result.digits_.pushFront(partialSum % 10);
       carry = partialSum / 10;
       --rhsCur;
    }
 
    // Check for a final carry
    if (carry > 0) {
-      result.digits.pushFront(carry);
+      result.digits_.pushFront(carry);
    }
 
    return result;
@@ -245,30 +245,31 @@ InfiniteInt InfiniteInt::add(const InfiniteInt& lhs, const InfiniteInt& rhs) con
  * @brief   Helper method to subtract InfiniteInts.
  * @param   lhs   The InfiniteInt being subtracted from
  * @param   rhs   InfiniteInt being subtracted from lhs
- * @post    The returned InfiniteInt represents the difference of the absolute values of
- *          lhs's number and rhs's.
- * @return  InfiniteInt representing the difference of lhs's number and rhs's.
+ * @post    The returned InfiniteInt represents the difference of lhs's
+ *          number and rhs's.
+ * @return  InfiniteInt representing the difference of lhs's number and
+ *          rhs's.
 */
 InfiniteInt InfiniteInt::subtract(const InfiniteInt& lhs, const InfiniteInt& rhs) const {
    // Need to subtract the smaller absolute value from the larger
    InfiniteInt result;           // The result of subtracting the two InfiniteInts
-   result.digits.clear();        // Remove default 0 digit
+   result.digits_.clear();        // Remove default 0 digit
    InfiniteInt lhsCopy(lhs);     // copy of lhs that can be changed
    InfiniteInt rhsCopy(rhs);     // copy of rhs that can be changed
 
    // Find largest absolute value and compute the difference
-   lhsCopy.isNegative = false;
-   rhsCopy.isNegative = false;
+   lhsCopy.isNegative_ = false;
+   rhsCopy.isNegative_ = false;
    const InfiniteInt& larger = lhsCopy < rhsCopy ? rhsCopy : lhsCopy;
    const InfiniteInt& smaller = &larger == &lhsCopy ? rhsCopy : lhsCopy;
 
    int partialDiff{0};        // The total from subtracting two digits
    int borrow{0};             // The borrow value after subtracting two digits
-   auto largerCur = larger.digits.last();   // iterator for top InfiniteInt
-   auto smallerCur = smaller.digits.last(); // iterator for bottom InfiniteInt
+   auto largerCur = larger.digits_.last();   // iterator for top InfiniteInt
+   auto smallerCur = smaller.digits_.last(); // iterator for bottom InfiniteInt
 
    // While both IIs have digits, subtract them one-by-one and record in result
-   while (largerCur != larger.digits.end() && smallerCur != smaller.digits.end()) {
+   while (largerCur != larger.digits_.end() && smallerCur != smaller.digits_.end()) {
       partialDiff = *largerCur - *smallerCur - borrow;   // subtract the digits
 
       // Check if borrow needed
@@ -280,7 +281,7 @@ InfiniteInt InfiniteInt::subtract(const InfiniteInt& lhs, const InfiniteInt& rhs
       }
 
       // Record result
-      result.digits.pushFront(partialDiff);
+      result.digits_.pushFront(partialDiff);
 
       // Go to next highest digits (ones digit is at the end so we need to decrement)
       --largerCur;
@@ -288,7 +289,7 @@ InfiniteInt InfiniteInt::subtract(const InfiniteInt& lhs, const InfiniteInt& rhs
    }
 
    // While lhs still has digits, add them to the result (accounting for borrows)
-   while (largerCur != larger.digits.end()) {
+   while (largerCur != larger.digits_.end()) {
       partialDiff = *largerCur - borrow;
       if (partialDiff < 0) {
          partialDiff += 10;
@@ -296,7 +297,7 @@ InfiniteInt InfiniteInt::subtract(const InfiniteInt& lhs, const InfiniteInt& rhs
       } else {
          borrow = 0;
       }
-      result.digits.pushFront(partialDiff);
+      result.digits_.pushFront(partialDiff);
       --largerCur;
    }
 
@@ -304,9 +305,9 @@ InfiniteInt InfiniteInt::subtract(const InfiniteInt& lhs, const InfiniteInt& rhs
    // Remove any leading zeroes and fix the sign of the result, if necessary
    result.removeLeadingZeroes();
    if (result != InfiniteInt(0)) {
-      if ((lhs.isNegative && (&larger == &lhsCopy)) ||
-         (!lhs.isNegative && (&larger == &rhsCopy))) {
-         result.isNegative = true;
+      if ((lhs.isNegative_ && (&larger == &lhsCopy)) ||
+         (!lhs.isNegative_ && (&larger == &rhsCopy))) {
+         result.isNegative_ = true;
       }
    }  // Otherwise result should be positive, which it is by default
    
@@ -323,15 +324,15 @@ InfiniteInt InfiniteInt::subtract(const InfiniteInt& lhs, const InfiniteInt& rhs
 */
 bool InfiniteInt::operator==(const InfiniteInt& rhs) const {
    // Check number for difference in number of digits or sign
-   if ((numDigits() != rhs.numDigits()) || (isNegative != rhs.isNegative)) {
+   if ((numDigits() != rhs.numDigits()) || (isNegative_ != rhs.isNegative_)) {
       // Different number of digits or sign - can't be equal
       return false;
    }
 
    // Check the digits one-by-one, looking for a difference
-   auto lhsCur = digits.begin();     // iterator for this II
-   auto rhsCur = rhs.digits.begin(); // iterator for rhs
-   while (lhsCur != digits.end() && rhsCur != rhs.digits.end()) {
+   auto lhsCur = digits_.begin();     // iterator for this II
+   auto rhsCur = rhs.digits_.begin(); // iterator for rhs
+   while (lhsCur != digits_.end() && rhsCur != rhs.digits_.end()) {
       if (*lhsCur != *rhsCur) {
          // Difference found - not equal
          return false;
@@ -366,21 +367,21 @@ bool InfiniteInt::operator!=(const InfiniteInt& rhs) const {
 */
 bool InfiniteInt::operator<(const InfiniteInt& rhs) const {
    // Check for differences in sign
-   if (!isNegative && rhs.isNegative) {
+   if (!isNegative_ && rhs.isNegative_) {
       return false;
-   } else if (isNegative && !rhs.isNegative) {
+   } else if (isNegative_ && !rhs.isNegative_) {
       return true;
    }
 
    // Check for differences in # of digits (signs are the same)
    if (numDigits() != rhs.numDigits()) {
-      if (isNegative) {
+      if (isNegative_) {
          if (numDigits() > rhs.numDigits()) {
             return true;
          } else if (numDigits() < rhs.numDigits()) {
             return false;
          }
-      } else if (!isNegative) {
+      } else if (!isNegative_) {
          if (numDigits() > rhs.numDigits()) {
             return false;
          } else if (numDigits() < rhs.numDigits()) {
@@ -390,19 +391,19 @@ bool InfiniteInt::operator<(const InfiniteInt& rhs) const {
    }
 
    // Same sign and # of digits - check digits one-by-one, starting with highest
-   auto lhsCur = digits.begin();     // iterator for this II
-   auto rhsCur = rhs.digits.begin(); // iterator for rhs
-   while (lhsCur != digits.end() && rhsCur != rhs.digits.end()) {
+   auto lhsCur = digits_.begin();     // iterator for this II
+   auto rhsCur = rhs.digits_.begin(); // iterator for rhs
+   while (lhsCur != digits_.end() && rhsCur != rhs.digits_.end()) {
       // Check for lhs < rhs
-      if ((!isNegative && (*lhsCur > *rhsCur)) ||
-         (isNegative && (*lhsCur < *rhsCur))) {
+      if ((!isNegative_ && (*lhsCur > *rhsCur)) ||
+         (isNegative_ && (*lhsCur < *rhsCur))) {
          // lhs must be larger
          return false;
       }
 
       // Check for rhs > lhs
-      if ((!isNegative && (*lhsCur < *rhsCur)) ||
-         (isNegative && (*lhsCur > *rhsCur))) {
+      if ((!isNegative_ && (*lhsCur < *rhsCur)) ||
+         (isNegative_ && (*lhsCur > *rhsCur))) {
          // lhs must be larger
          return true;
       }
@@ -416,22 +417,13 @@ bool InfiniteInt::operator<(const InfiniteInt& rhs) const {
    return false;
 }
 
-/** setNegative(bool isNegative)
- * @brief   Sets the sign of this InfiniteInt
- * @param   negative  New value for isNegative
- * @post    isNegative == negative
-*/
-void InfiniteInt::setNegative(bool negative) {
-   isNegative = negative;
-}
-
 /** removeLeadingZeroes()
  * @brief   Removes any leading zero digits from this InfiniteInt.
  * @post    All leading zero digits, other than the ones digit, have been removed from this InfiniteInt.
 */
 void InfiniteInt::removeLeadingZeroes() {
-   while ((digits.numEntries() > 1) && (digits.front() == 0)) {   // Don't remove the ones digit
-      digits.popFront();
+   while ((digits_.numEntries() > 1) && (digits_.front() == 0)) {   // Don't remove the ones digit
+      digits_.popFront();
    }
 }
 
@@ -446,12 +438,12 @@ void InfiniteInt::removeLeadingZeroes() {
 */
 std::ostream& operator<<(std::ostream& outStream, const InfiniteInt& IIToPrint) {
    // Output minus sign, if necessary
-   if (IIToPrint.isNegative) {
+   if (IIToPrint.isNegative_) {
       outStream << '-';
    }
 
    // Output the digits, from highest to lowest
-   for (auto iter = IIToPrint.digits.begin(); iter != IIToPrint.digits.end(); ++iter) {
+   for (auto iter = IIToPrint.digits_.begin(); iter != IIToPrint.digits_.end(); ++iter) {
       outStream << *iter;
    }
 
@@ -476,15 +468,15 @@ std::ostream& operator<<(std::ostream& outStream, const InfiniteInt& IIToPrint) 
 */
 std::istream& operator>>(std::istream& inStream, InfiniteInt& IIToFill) {
    // Reset the InfiniteInt
-   IIToFill.digits.clear();
-   IIToFill.isNegative = false;
+   IIToFill.digits_.clear();
+   IIToFill.isNegative_ = false;
 
    // Discard leading whitespace
    inStream >> std::ws;
 
    // Check for minus sign
    if (inStream.peek() == '-') {
-      IIToFill.isNegative = true;
+      IIToFill.isNegative_ = true;
       inStream.ignore(1);  // remove '-' from the stream
    }
 
@@ -497,7 +489,7 @@ std::istream& operator>>(std::istream& inStream, InfiniteInt& IIToFill) {
    char currentChar;    // latest character read from the stream
    while (inStream.get(currentChar)) {
       if (std::isdigit(currentChar)) {
-         IIToFill.digits.pushBack(currentChar - '0');
+         IIToFill.digits_.pushBack(currentChar - '0');
       } else {
          // Not a digit - put it back in the stream and stop reading
          inStream.putback(currentChar);
@@ -506,14 +498,14 @@ std::istream& operator>>(std::istream& inStream, InfiniteInt& IIToFill) {
    }
 
    // If no digits were read from inStream, set the InfiniteInt to zero
-   if (IIToFill.digits.numEntries() == 0) {
-      IIToFill.digits.pushBack(0);
+   if (IIToFill.digits_.numEntries() == 0) {
+      IIToFill.digits_.pushBack(0);
       
       /* Check whether a leading '-' was read from inStream.
          If so, put it back and set IIToFill to be positive. */
-      if (IIToFill.isNegative) {
+      if (IIToFill.isNegative_) {
          inStream.putback('-');
-         IIToFill.isNegative = false;
+         IIToFill.isNegative_ = false;
       }
    }
 
